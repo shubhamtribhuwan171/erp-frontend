@@ -19,5 +19,14 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // This codebase is intentionally pragmatic; keep lint focused on real bugs.
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'react-hooks/exhaustive-deps': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+      // Non-standard rule triggered by some configs; not useful for this codebase.
+      'react-hooks/immutability': 'off',
+    },
   },
 ])

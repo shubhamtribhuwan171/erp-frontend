@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Package, ShoppingCart, Receipt, 
   TrendingUp, Users, UserCircle, Settings, 
   ChevronLeft, ChevronRight, LogOut, Search, Bell,
-  Folder, Ruler, MapPin, Shield
+  Shield
 } from 'lucide-react';
 
 interface LayoutProps {

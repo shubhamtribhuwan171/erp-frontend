@@ -82,9 +82,9 @@ export default function App() {
           
           {/* CRM */}
           <Route path="/crm/leads" element={<ProtectedRoute><LeadsList /></ProtectedRoute>} />
-          <Route path="/crm/contacts" element={<ProtectedRoute><ContactsList /></Protected          {/* Settings */}
-Route>} />
+          <Route path="/crm/contacts" element={<ProtectedRoute><ContactsList /></ProtectedRoute>} />
           
+          {/* Settings */}
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>

@@ -22,7 +22,7 @@ export default function AccountsList() {
   const [accounts, setAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setState({ name:Form] = use '', code: '', type: 'expense' });
+  const [form, setForm] = useState({ name: '', code: '', type: 'expense' });
 
   useEffect(() => { fetchAccounts(); }, []);
   const fetchAccounts = async () => {
@@ -33,7 +33,7 @@ export default function AccountsList() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try { await accounting.accounts.create(form); setForm({name:'',code:'',type:'expense'}); setShowForm(false); fetchAccounts(); }
+    try { await accounting.accounts.create(form); setForm({ name: '', code: '', type: 'expense' }); setShowForm(false); fetchAccounts(); }
     catch (e) { alert('Failed'); }
   };
 
@@ -63,7 +63,7 @@ export default function AccountsList() {
         </div>
       )}
 
-      {loading ? <div>Loading...</div> : Object.entries(grouped).map(([type, items]) => (
+      {loading ? <div>Loading...</div> : Object.entries(grouped as Record<string, any[]>).map(([type, items]) => (
         <div key={type} className="bg-white rounded-lg border overflow-hidden">
           <div className="bg-gray-50 px-4 py-2 border-b flex items-center gap-2">
             {(() => { const Icon = typeIcons[type] || DollarSign; return <Icon size={18} className="text-[--secondary]" /> })()}

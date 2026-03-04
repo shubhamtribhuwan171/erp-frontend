@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { adminAuth } from '../lib/admin-api'
-import { Button, Input } from '../components/ui'
+import { adminAuth } from '../../lib/admin-api'
+import { Button, Input } from '../../components/ui'
 
 export default function AdminLogin() {
   const navigate = useNavigate()
@@ -16,7 +16,7 @@ export default function AdminLogin() {
     setLoading(true)
 
     try {
-      const res = await adminAuth.login(email, password)
+      const res: any = await adminAuth.login(email, password)
       if (res.success) {
         localStorage.setItem('adminToken', res.data.token)
         localStorage.setItem('adminUser', JSON.stringify(res.data))

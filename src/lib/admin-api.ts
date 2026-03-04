@@ -1,13 +1,13 @@
 // Admin API Client
 import axios from 'axios'
 
-const adminApi = axios.create({
+const adminApi: any = axios.create({
   baseURL: '/api/admin',
   headers: { 'Content-Type': 'application/json' },
 })
 
 // Add auth interceptor
-adminApi.interceptors.request.use((config) => {
+adminApi.interceptors.request.use((config: any) => {
   const token = localStorage.getItem('adminToken')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -17,8 +17,8 @@ adminApi.interceptors.request.use((config) => {
 
 // Response interceptor
 adminApi.interceptors.response.use(
-  (response) => response.data,
-  (error) => {
+  (response: any) => response.data,
+  (error: any) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('adminToken')
       window.location.href = '/admin/login'

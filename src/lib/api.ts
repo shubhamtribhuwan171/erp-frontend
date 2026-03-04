@@ -100,6 +100,7 @@ export const purchases = {
     list: (params?: any) => api.get('/vendors', { params }),
     get: (id: string) => api.get(`/vendors/${id}`),
     create: (data: any) => api.post('/vendors', data),
+    delete: (id: string) => api.delete(`/vendors/${id}`),
   },
 };
 
