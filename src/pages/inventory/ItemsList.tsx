@@ -74,9 +74,9 @@ export default function ItemsList() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg border border-[var(--border)] overflow-hidden">
+      <div className="bg-white rounded-lg border border-[var(--border-strong)] overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-[var(--border)]">
+          <thead className="bg-gray-50 border-b border-[var(--border-strong)]">
             <tr>
               <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">SKU</th>
               <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Name</th>
@@ -87,7 +87,7 @@ export default function ItemsList() {
               <th className="text-right px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--border)]">
+          <tbody className="divide-y divide-[var(--border-strong)]">
             {loading ? (
               <tr>
                 <td colSpan={7} className="px-4 py-8 text-center text-[var(--secondary)]">Loading...</td>

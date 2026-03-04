@@ -26,9 +26,9 @@ export default function JournalList() {
         <button className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> New Entry</button>
       </div>
 
-      <div className="bg-white rounded-lg border overflow-hidden">
+      <div className="bg-white rounded-lg border border-[var(--border-strong)] overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b">
+          <thead className="bg-gray-50 border-b border-[var(--border-strong)]">
             <tr>
               <th className="text-left px-4 py-3 text-sm font-medium text-[var(--secondary)]">Entry #</th>
               <th className="text-left px-4 py-3 text-sm font-medium text-[var(--secondary)]">Date</th>
@@ -36,7 +36,7 @@ export default function JournalList() {
               <th className="text-center px-4 py-3 text-sm font-medium text-[var(--secondary)]">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-[var(--border-strong)]">
             {loading ? <tr><td colSpan={4} className="px-4 py-8 text-center">Loading...</td></tr> : 
             entries.length === 0 ? <tr><td colSpan={4} className="px-4 py-8 text-center text-[var(--secondary)]">No journal entries</td></tr> :
             entries.map((entry) => (
