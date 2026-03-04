@@ -95,11 +95,14 @@ export const purchases = {
     list: (params?: any) => api.get('/purchases/orders', { params }),
     get: (id: string) => api.get(`/purchases/orders/${id}`),
     create: (data: any) => api.post('/purchases/orders', data),
+    update: (id: string, data: any) => api.put(`/purchases/orders/${id}`, data),
+    updateStatus: (id: string, status: string) => api.patch(`/purchases/orders/${id}`, { status }),
   },
   vendors: {
     list: (params?: any) => api.get('/vendors', { params }),
     get: (id: string) => api.get(`/vendors/${id}`),
     create: (data: any) => api.post('/vendors', data),
+    update: (id: string, data: any) => api.put(`/vendors/${id}`, data),
     delete: (id: string) => api.delete(`/vendors/${id}`),
   },
 };
