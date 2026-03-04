@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, Edit } from 'lucide-react'
+import { ArrowLeft, Edit, Mail, Phone, MapPin } from 'lucide-react'
 import { sales } from '../../lib/api'
 
 export default function CustomerDetails() {
@@ -16,7 +16,7 @@ export default function CustomerDetails() {
       setError('')
       try {
         const res = await sales.customers.get(id)
-        setCustomer(res.data.data?.customer ?? res.data.data ?? res.data)
+        setCustomer(res.data.data)
       } catch (e: any) {
         setError(e?.message ?? 'Failed to load customer')
       } finally {
@@ -26,6 +26,11 @@ export default function CustomerDetails() {
     run()
   }, [id])
 
+  const statusBadge = useMemo(() => {
+    const s = String(customer?.status ?? 'active').toLowerCase()
+    return s === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+  }, [customer?.status])
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -34,8 +39,8 @@ export default function CustomerDetails() {
             <ArrowLeft size={18} className="text-[var(--secondary)]" />
           </Link>
           <div>
-            <h1 className="text-2xl font-semibold">Customer Details</h1>
-            <p className="text-[var(--text-secondary)]">View customer information</p>
+            <h1 className="text-2xl font-semibold">Customer</h1>
+            <p className="text-[var(--text-secondary)]">Customer details</p>
           </div>
         </div>
 
@@ -58,38 +63,50 @@ export default function CustomerDetails() {
         ) : !customer ? (
           <div className="py-8 text-center text-[var(--secondary)]">Customer not found</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <div className="text-[var(--text-secondary)]">Name</div>
-              <div className="font-medium">{customer.name ?? '-'}</div>
+          <>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <div className="text-sm text-[var(--text-secondary)]">Name</div>
+                <div className="text-lg font-semibold">{customer.name ?? '-'}</div>
+                <div className="text-sm text-[var(--text-secondary)] font-mono">{customer.code ?? ''}</div>
+              </div>
+              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs capitalize ${statusBadge}`}>
+                {customer.status ?? 'active'}
+              </span>
             </div>
-            <div>
-              <div className="text-[var(--text-secondary)]">Code</div>
-              <div className="font-mono">{customer.code ?? '-'}</div>
+
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div className="border border-[var(--border)] rounded-lg p-3">
+                <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
+                  <Mail size={14} /> Email
+                </div>
+                <div className="mt-1 font-medium">{customer.email ?? '-'}</div>
+              </div>
+              <div className="border border-[var(--border)] rounded-lg p-3">
+                <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
+                  <Phone size={14} /> Phone
+                </div>
+                <div className="mt-1 font-medium">{customer.phone ?? '-'}</div>
+              </div>
             </div>
-            <div>
-              <div className="text-[var(--text-secondary)]">Email</div>
-              <div className="font-medium">{customer.email ?? '-'}</div>
+
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div className="border border-[var(--border)] rounded-lg p-3">
+                <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
+                  <MapPin size={14} /> Billing Address
+                </div>
+                <div className="mt-1 whitespace-pre-wrap">{customer.billing_address ?? '-'}</div>
+              </div>
+              <div className="border border-[var(--border)] rounded-lg p-3">
+                <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
+                  <MapPin size={14} /> Shipping Address
+                </div>
+                <div className="mt-1 whitespace-pre-wrap">{customer.shipping_address ?? '-'}</div>
+              </div>
             </div>
-            <div>
-              <div className="text-[var(--text-secondary)]">Phone</div>
-              <div className="font-medium">{customer.phone ?? '-'}</div>
-            </div>
-          </div>
+          </>
         )}
       </div>
-
-      {!loading && customer && (
-        <div className="bg-white rounded-lg border border-[var(--border)] p-4">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold">Raw payload (for now)</h2>
-            <span className="text-xs text-[var(--text-secondary)]">Placeholder detail view</span>
-          </div>
-          <pre className="mt-3 text-xs bg-gray-50 border border-[var(--border)] rounded-lg p-3 overflow-auto text-left">
-            {JSON.stringify(customer, null, 2)}
-          </pre>
-        </div>
-      )}
     </div>
   )
 }
