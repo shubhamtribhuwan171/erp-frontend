@@ -4,8 +4,9 @@ import {
   LayoutDashboard, Package, ShoppingCart, Receipt, 
   TrendingUp, Users, UserCircle, Settings, 
   ChevronLeft, ChevronRight, LogOut, Search, Bell,
-  Shield
+  Shield, Sun, Moon
 } from 'lucide-react';
+import { toggleTheme, type Theme } from '../../lib/theme';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -53,6 +54,9 @@ export default function Layout({ children }: LayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState<string[]>(['Inventory']);
   const location = useLocation();
+  const [theme, setTheme] = useState<Theme>(() => (
+    document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'
+  ));
 
   const toggleMenu = (label: string) => {
     setExpandedMenus(prev => prev.includes(label) ? prev.filter(m => m !== label) : [...prev, label]);
@@ -118,7 +122,28 @@ export default function Layout({ children }: LayoutProps) {
             <input type="text" placeholder="Search..." className="flex-1 border-none outline-none text-sm bg-transparent" />
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 hover:bg-gray-100 rounded-full"><Bell size={20} className="text-[--secondary]" /><span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span></button>
+            {/* Theme toggle */}
+            <button
+              type="button"
+              className="themeToggle"
+              data-theme={theme}
+              onClick={() => setTheme(toggleTheme(theme))}
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            >
+              <span className="themeToggleThumb" aria-hidden="true" />
+              <span className="themeToggleIcon" aria-hidden="true">
+                <Sun size={16} />
+              </span>
+              <span className="themeToggleIcon" aria-hidden="true">
+                <Moon size={16} />
+              </span>
+            </button>
+
+            <button className="relative p-2 hover:bg-gray-100 rounded-full">
+              <Bell size={20} className="text-[--secondary]" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-[--primary] rounded-full flex items-center justify-center text-white text-sm">T</div>
             </div>
