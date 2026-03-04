@@ -62,21 +62,21 @@ export default function NewItemForm() {
     <div className="max-w-3xl mx-auto">
       <button
         onClick={() => navigate('/inventory/items')}
-        className="flex items-center gap-2 text-[--secondary] hover:text-[--text-primary] mb-4"
+        className="flex items-center gap-2 text-[var(--secondary)] hover:text-[var(--text-primary)] mb-4"
       >
         <ArrowLeft size={18} />
         Back to Items
       </button>
 
-      <div className="bg-white rounded-lg border border-[--border]">
-        <div className="p-6 border-b border-[--border]">
+      <div className="bg-white rounded-lg border border-[var(--border)]">
+        <div className="p-6 border-b border-[var(--border)]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Package className="text-[--primary]" size={20} />
+              <Package className="text-[var(--primary)]" size={20} />
             </div>
             <div>
               <h1 className="text-xl font-semibold">New Item</h1>
-              <p className="text-sm text-[--text-secondary]">Add a new inventory item</p>
+              <p className="text-sm text-[var(--text-secondary)]">Add a new inventory item</p>
             </div>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function NewItemForm() {
                 type="text"
                 value={form.sku}
                 onChange={(e) => setForm({ ...form, sku: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="SKU-0001"
                 required
               />
@@ -101,7 +101,7 @@ export default function NewItemForm() {
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="Laptop"
                 required
               />
@@ -112,7 +112,7 @@ export default function NewItemForm() {
               <textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 rows={3}
                 placeholder="Item description..."
               />
@@ -123,7 +123,7 @@ export default function NewItemForm() {
               <select
                 value={form.category_id}
                 onChange={(e) => setForm({ ...form, category_id: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
               >
                 <option value="">Select Category</option>
                 {categories.map((cat) => (
@@ -137,7 +137,7 @@ export default function NewItemForm() {
               <select
                 value={form.unit_id}
                 onChange={(e) => setForm({ ...form, unit_id: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 required
               >
                 <option value="">Select Unit</option>
@@ -153,7 +153,7 @@ export default function NewItemForm() {
                 type="number"
                 value={form.standard_cost_minor}
                 onChange={(e) => setForm({ ...form, standard_cost_minor: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="0.00"
                 step="0.01"
               />
@@ -165,7 +165,7 @@ export default function NewItemForm() {
                 type="number"
                 value={form.sale_price_minor}
                 onChange={(e) => setForm({ ...form, sale_price_minor: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="0.00"
                 step="0.01"
               />
@@ -177,7 +177,7 @@ export default function NewItemForm() {
                 type="number"
                 value={form.reorder_level}
                 onChange={(e) => setForm({ ...form, reorder_level: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="10"
               />
             </div>
@@ -188,7 +188,7 @@ export default function NewItemForm() {
                 type="number"
                 value={form.reorder_qty}
                 onChange={(e) => setForm({ ...form, reorder_qty: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="50"
               />
             </div>
@@ -199,7 +199,7 @@ export default function NewItemForm() {
                   type="checkbox"
                   checked={form.track_inventory}
                   onChange={(e) => setForm({ ...form, track_inventory: e.target.checked })}
-                  className="rounded border-[--border]"
+                  className="rounded border-[var(--border)]"
                 />
                 <span className="text-sm">Track Inventory</span>
               </label>
@@ -209,25 +209,25 @@ export default function NewItemForm() {
                   type="checkbox"
                   checked={form.is_active}
                   onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
-                  className="rounded border-[--border]"
+                  className="rounded border-[var(--border)]"
                 />
                 <span className="text-sm">Active</span>
               </label>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-[--border]">
+          <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border)]">
             <button
               type="button"
               onClick={() => navigate('/inventory/items')}
-              className="px-4 py-2 border border-[--border] rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 border border-[var(--border)] rounded-lg hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-[--primary] hover:bg-[--primary-hover] text-white px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
+              className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
             >
               {loading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
               {loading ? 'Saving...' : 'Save Item'}

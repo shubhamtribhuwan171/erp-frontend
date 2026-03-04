@@ -33,20 +33,20 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[--background] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[--primary]">ERP</h1>
-          <p className="text-[--text-secondary] mt-1">Business Management</p>
+          <h1 className="text-3xl font-bold text-[var(--primary)]">ERP</h1>
+          <p className="text-[var(--text-secondary)] mt-1">Business Management</p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-[--border] p-8">
+        <div className="bg-white rounded-lg shadow-sm border border-[var(--border)] p-8">
           <h2 className="text-xl font-semibold mb-6">Sign in to your account</h2>
           
           {error && (
-            <div className="bg-red-50 text-[--danger] p-3 rounded-lg mb-4 text-sm">
+            <div className="bg-red-50 text-[var(--danger)] p-3 rounded-lg mb-4 text-sm">
               {error}
             </div>
           )}
@@ -58,7 +58,7 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary] focus:border-transparent"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
                 placeholder="you@company.com"
                 required
               />
@@ -71,14 +71,14 @@ export default function Login() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 pr-10 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary] focus:border-transparent"
+                  className="w-full px-3 py-2 pr-10 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[--secondary]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--secondary)]"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -87,10 +87,10 @@ export default function Login() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2">
-                <input type="checkbox" className="rounded border-[--border]" />
-                <span className="text-sm text-[--text-secondary]">Remember me</span>
+                <input type="checkbox" className="rounded border-[var(--border)]" />
+                <span className="text-sm text-[var(--text-secondary)]">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-[--primary] hover:underline">
+              <a href="#" className="text-sm text-[var(--primary)] hover:underline">
                 Forgot password?
               </a>
             </div>
@@ -105,9 +105,9 @@ export default function Login() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-[--text-secondary]">
+          <p className="mt-6 text-center text-sm text-[var(--text-secondary)]">
             Don't have an account?{' '}
-            <a href="/register" className="text-[--primary] hover:underline font-medium">
+            <a href="/register" className="text-[var(--primary)] hover:underline font-medium">
               Register
             </a>
           </p>

@@ -43,7 +43,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-[--secondary]">Loading...</div>
+        <div className="text-[var(--secondary)]">Loading...</div>
       </div>
     );
   }
@@ -53,7 +53,7 @@ export default function SettingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold">Settings</h1>
-        <p className="text-[--text-secondary]">Manage your company and account settings</p>
+        <p className="text-[var(--text-secondary)]">Manage your company and account settings</p>
       </div>
 
       {message && (
@@ -63,9 +63,9 @@ export default function SettingsPage() {
       )}
 
       {/* Company Settings */}
-      <div className="bg-white rounded-lg border border-[--border] p-6">
+      <div className="bg-white rounded-lg border border-[var(--border)] p-6">
         <div className="flex items-center gap-3 mb-6">
-          <Building className="text-[--primary]" size={24} />
+          <Building className="text-[var(--primary)]" size={24} />
           <h2 className="text-lg font-semibold">Company Information</h2>
         </div>
 
@@ -76,7 +76,7 @@ export default function SettingsPage() {
               type="text"
               value={company.name || ''}
               onChange={(e) => setCompany({ ...company, name: e.target.value })}
-              className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+              className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             />
           </div>
 
@@ -86,7 +86,7 @@ export default function SettingsPage() {
               type="text"
               value={company.legal_name || ''}
               onChange={(e) => setCompany({ ...company, legal_name: e.target.value })}
-              className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+              className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             />
           </div>
 
@@ -96,7 +96,7 @@ export default function SettingsPage() {
               type="text"
               value={company.gstin || ''}
               onChange={(e) => setCompany({ ...company, gstin: e.target.value })}
-              className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+              className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
               placeholder="29AABCU9603R1ZM"
             />
           </div>
@@ -106,7 +106,7 @@ export default function SettingsPage() {
             <select
               value={company.base_currency_code || 'INR'}
               onChange={(e) => setCompany({ ...company, base_currency_code: e.target.value })}
-              className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+              className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             >
               <option value="INR">INR - Indian Rupee</option>
               <option value="USD">USD - US Dollar</option>
@@ -120,7 +120,7 @@ export default function SettingsPage() {
             <select
               value={company.timezone || 'Asia/Kolkata'}
               onChange={(e) => setCompany({ ...company, timezone: e.target.value })}
-              className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+              className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             >
               <option value="Asia/Kolkata">Asia/Kolkata (GMT+5:30)</option>
               <option value="UTC">UTC (GMT+0)</option>
@@ -132,9 +132,9 @@ export default function SettingsPage() {
       </div>
 
       {/* Account Settings */}
-      <div className="bg-white rounded-lg border border-[--border] p-6">
+      <div className="bg-white rounded-lg border border-[var(--border)] p-6">
         <div className="flex items-center gap-3 mb-6">
-          <User className="text-[--primary]" size={24} />
+          <User className="text-[var(--primary)]" size={24} />
           <h2 className="text-lg font-semibold">Your Account</h2>
         </div>
 
@@ -145,7 +145,7 @@ export default function SettingsPage() {
               type="email"
               value={user?.email || ''}
               disabled
-              className="w-full px-3 py-2 border border-[--border] rounded-lg bg-gray-50 text-[--secondary]"
+              className="w-full px-3 py-2 border border-[var(--border)] rounded-lg bg-gray-50 text-[var(--secondary)]"
             />
           </div>
 
@@ -155,7 +155,7 @@ export default function SettingsPage() {
               type="text"
               value={user?.role || ''}
               disabled
-              className="w-full px-3 py-2 border border-[--border] rounded-lg bg-gray-50 text-[--secondary] capitalize"
+              className="w-full px-3 py-2 border border-[var(--border)] rounded-lg bg-gray-50 text-[var(--secondary)] capitalize"
             />
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function SettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="bg-[--primary] hover:bg-[--primary-hover] text-white px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
+          className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
         >
           {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
           {saving ? 'Saving...' : 'Save Changes'}

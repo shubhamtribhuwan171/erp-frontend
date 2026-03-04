@@ -26,13 +26,13 @@ export default function LeadsList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-semibold">Leads</h1><p className="text-[--secondary]">Manage leads</p></div>
-        <Link to="/crm/leads/new" className="bg-[--primary] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> Add Lead</Link>
+        <div><h1 className="text-2xl font-semibold">Leads</h1><p className="text-[var(--secondary)]">Manage leads</p></div>
+        <Link to="/crm/leads/new" className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> Add Lead</Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading ? <div>Loading...</div> : leads.length === 0 ? (
-          <div className="col-span-full text-center py-8 text-[--secondary]">No leads yet</div>
+          <div className="col-span-full text-center py-8 text-[var(--secondary)]">No leads yet</div>
         ) : leads.map(lead => (
           <div key={lead.id} className="bg-white rounded-lg border p-4">
             <div className="flex items-start justify-between">
@@ -42,12 +42,12 @@ export default function LeadsList() {
                 </div>
                 <div>
                   <h3 className="font-semibold">{lead.name}</h3>
-                  <p className="text-xs text-[--secondary]">{lead.code}</p>
+                  <p className="text-xs text-[var(--secondary)]">{lead.code}</p>
                 </div>
               </div>
               <span className={`px-2 py-1 rounded text-xs capitalize ${statusColors[lead.status] || 'bg-gray-100'}`}>{lead.status || 'new'}</span>
             </div>
-            <div className="mt-4 space-y-2 text-sm text-[--secondary]">
+            <div className="mt-4 space-y-2 text-sm text-[var(--secondary)]">
               {lead.email && <div className="flex items-center gap-2"><Mail size={14} />{lead.email}</div>}
               {lead.phone && <div className="flex items-center gap-2"><Phone size={14} />{lead.phone}</div>}
             </div>

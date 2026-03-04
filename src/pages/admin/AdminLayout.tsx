@@ -47,7 +47,7 @@ export default function AdminLayout() {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
                   isActive
-                    ? 'bg-[--primary] text-white'
+                    ? 'bg-[var(--primary)] text-white'
                     : 'text-gray-300 hover:bg-gray-800'
                 }`
               }
@@ -60,7 +60,7 @@ export default function AdminLayout() {
 
         <div className="absolute bottom-0 w-64 p-4 border-t border-gray-800">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-[--primary] rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-[var(--primary)] rounded-full flex items-center justify-center">
               {adminUser?.full_name?.[0] || 'A'}
             </div>
             <div className="flex-1 min-w-0">

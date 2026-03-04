@@ -54,7 +54,11 @@
 
 :root[data-theme="dark"] input,
 :root[data-theme="dark"] select,
-:root[data-theme="dark"] textarea { color: var(--text-primary); }
+:root[data-theme="dark"] textarea {
+  color: var(--text-primary);
+  background-color: var(--surface);
+  border-color: var(--border);
+}
 
 :root[data-theme="dark"] input::placeholder,
 :root[data-theme="dark"] textarea::placeholder { color: #71717A; }

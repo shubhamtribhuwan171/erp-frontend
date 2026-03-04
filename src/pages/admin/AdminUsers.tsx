@@ -115,7 +115,7 @@ export default function AdminUsers() {
                 <td className="px-6 py-4">
                   <button
                     onClick={() => toggleActive(user)}
-                    className="text-sm text-[--primary] hover:underline"
+                    className="text-sm text-[var(--primary)] hover:underline"
                   >
                     {user.is_active ? 'Disable' : 'Enable'}
                   </button>

@@ -22,23 +22,23 @@ export default function JournalList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-semibold">Journal Entries</h1><p className="text-[--text-secondary]">View journal entries</p></div>
-        <button className="bg-[--primary] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> New Entry</button>
+        <div><h1 className="text-2xl font-semibold">Journal Entries</h1><p className="text-[var(--text-secondary)]">View journal entries</p></div>
+        <button className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> New Entry</button>
       </div>
 
       <div className="bg-white rounded-lg border overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[--secondary]">Entry #</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[--secondary]">Date</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[--secondary]">Description</th>
-              <th className="text-center px-4 py-3 text-sm font-medium text-[--secondary]">Status</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--secondary)]">Entry #</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--secondary)]">Date</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--secondary)]">Description</th>
+              <th className="text-center px-4 py-3 text-sm font-medium text-[var(--secondary)]">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {loading ? <tr><td colSpan={4} className="px-4 py-8 text-center">Loading...</td></tr> : 
-            entries.length === 0 ? <tr><td colSpan={4} className="px-4 py-8 text-center text-[--secondary]">No journal entries</td></tr> :
+            entries.length === 0 ? <tr><td colSpan={4} className="px-4 py-8 text-center text-[var(--secondary)]">No journal entries</td></tr> :
             entries.map((entry) => (
               <tr key={entry.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3 font-mono text-sm">{entry.entry_no}</td>

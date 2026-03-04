@@ -37,21 +37,21 @@ export default function NewCustomerForm() {
     <div className="max-w-3xl mx-auto">
       <button
         onClick={() => navigate('/sales/customers')}
-        className="flex items-center gap-2 text-[--secondary] hover:text-[--text-primary] mb-4"
+        className="flex items-center gap-2 text-[var(--secondary)] hover:text-[var(--text-primary)] mb-4"
       >
         <ArrowLeft size={18} />
         Back to Customers
       </button>
 
-      <div className="bg-white rounded-lg border border-[--border]">
-        <div className="p-6 border-b border-[--border]">
+      <div className="bg-white rounded-lg border border-[var(--border)]">
+        <div className="p-6 border-b border-[var(--border)]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <User className="text-[--primary]" size={20} />
+              <User className="text-[var(--primary)]" size={20} />
             </div>
             <div>
               <h1 className="text-xl font-semibold">New Customer</h1>
-              <p className="text-sm text-[--text-secondary]">Add a new customer</p>
+              <p className="text-sm text-[var(--text-secondary)]">Add a new customer</p>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function NewCustomerForm() {
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="Acme Corporation"
                 required
               />
@@ -76,7 +76,7 @@ export default function NewCustomerForm() {
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="contact@acme.com"
               />
             </div>
@@ -87,7 +87,7 @@ export default function NewCustomerForm() {
                 type="tel"
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="+91 98765 43210"
               />
             </div>
@@ -98,7 +98,7 @@ export default function NewCustomerForm() {
                 type="number"
                 value={form.payment_terms_days}
                 onChange={(e) => setForm({ ...form, payment_terms_days: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="30"
               />
             </div>
@@ -109,7 +109,7 @@ export default function NewCustomerForm() {
                 type="text"
                 value={form.tax_id}
                 onChange={(e) => setForm({ ...form, tax_id: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 placeholder="29AABCU9603R1ZM"
               />
             </div>
@@ -119,7 +119,7 @@ export default function NewCustomerForm() {
               <textarea
                 value={form.billing_address}
                 onChange={(e) => setForm({ ...form, billing_address: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 rows={2}
                 placeholder="123 Business Park, Suite 100..."
               />
@@ -130,25 +130,25 @@ export default function NewCustomerForm() {
               <textarea
                 value={form.shipping_address}
                 onChange={(e) => setForm({ ...form, shipping_address: e.target.value })}
-                className="w-full px-3 py-2 border border-[--border] rounded-lg focus:outline-none focus:ring-2 focus:ring-[--primary]"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 rows={2}
                 placeholder="Same as billing or different..."
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-[--border]">
+          <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border)]">
             <button
               type="button"
               onClick={() => navigate('/sales/customers')}
-              className="px-4 py-2 border border-[--border] rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 border border-[var(--border)] rounded-lg hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-[--primary] hover:bg-[--primary-hover] text-white px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
+              className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
             >
               {loading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
               {loading ? 'Saving...' : 'Save Customer'}

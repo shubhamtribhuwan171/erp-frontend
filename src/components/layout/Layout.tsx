@@ -65,10 +65,10 @@ export default function Layout({ children }: LayoutProps) {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-[--background] flex">
-      <aside className={`${collapsed ? 'w-16' : 'w-60'} bg-white border-r border-[--border] flex flex-col transition-all duration-200`}>
-        <div className="h-14 flex items-center justify-between px-4 border-b border-[--border]">
-          {!collapsed && <span className="font-bold text-lg text-[--primary]">ERP</span>}
+    <div className="min-h-screen bg-[var(--background)] flex">
+      <aside className={`${collapsed ? 'w-16' : 'w-60'} bg-white border-r border-[var(--border)] flex flex-col transition-all duration-200`}>
+        <div className="h-14 flex items-center justify-between px-4 border-b border-[var(--border)]">
+          {!collapsed && <span className="font-bold text-lg text-[var(--primary)]">ERP</span>}
           <button onClick={() => setCollapsed(!collapsed)} className="p-1 hover:bg-gray-100 rounded">
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
@@ -80,13 +80,13 @@ export default function Layout({ children }: LayoutProps) {
               {item.items ? (
                 <>
                   <button onClick={() => toggleMenu(item.label)} className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 ${expandedMenus.includes(item.label) ? 'bg-gray-50' : ''}`}>
-                    <item.icon size={20} className="text-[--secondary]" />
+                    <item.icon size={20} className="text-[var(--secondary)]" />
                     {!collapsed && <><span className="flex-1 text-left text-sm">{item.label}</span><ChevronRight size={14} className={`transition-transform ${expandedMenus.includes(item.label) ? 'rotate-90' : ''}`} /></>}
                   </button>
                   {!collapsed && expandedMenus.includes(item.label) && (
                     <div className="bg-gray-50">
                       {item.items.map(sub => (
-                        <Link key={sub.path} to={sub.path} className={`block pl-12 pr-4 py-2 text-sm hover:bg-gray-100 ${isActive(sub.path) ? 'text-[--primary] font-medium' : 'text-[--text-secondary]'}`}>
+                        <Link key={sub.path} to={sub.path} className={`block pl-12 pr-4 py-2 text-sm hover:bg-gray-100 ${isActive(sub.path) ? 'text-[var(--primary)] font-medium' : 'text-[var(--text-secondary)]'}`}>
                           {sub.label}
                         </Link>
                       ))}
@@ -94,8 +94,8 @@ export default function Layout({ children }: LayoutProps) {
                   )}
                 </>
               ) : (
-                <Link to={item.path} className={`flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 ${isActive(item.path) ? 'bg-blue-50 text-[--primary] border-r-2 border-[--primary]' : ''}`}>
-                  <item.icon size={20} className={isActive(item.path) ? 'text-[--primary]' : 'text-[--secondary]'} />
+                <Link to={item.path} className={`flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 ${isActive(item.path) ? 'bg-blue-50 text-[var(--primary)] border-r-2 border-[var(--primary)]' : ''}`}>
+                  <item.icon size={20} className={isActive(item.path) ? 'text-[var(--primary)]' : 'text-[var(--secondary)]'} />
                   {!collapsed && <span className="text-sm">{item.label}</span>}
                 </Link>
               )}
@@ -103,12 +103,12 @@ export default function Layout({ children }: LayoutProps) {
           ))}
         </nav>
 
-        <div className="border-t border-[--border] p-4 space-y-2">
+        <div className="border-t border-[var(--border)] p-4 space-y-2">
           <a href="/admin/dashboard" className="flex items-center gap-3 text-sm text-gray-600 hover:bg-gray-100 w-full px-2 py-2 rounded">
             <Shield size={18} />
             {!collapsed && <span>Admin Portal</span>}
           </a>
-          <button onClick={() => { localStorage.removeItem('token'); window.location.href = '/login'; }} className="flex items-center gap-3 text-sm text-[--danger] hover:bg-red-50 w-full px-2 py-2 rounded">
+          <button onClick={() => { localStorage.removeItem('token'); window.location.href = '/login'; }} className="flex items-center gap-3 text-sm text-[var(--danger)] hover:bg-red-50 w-full px-2 py-2 rounded">
             <LogOut size={18} />
             {!collapsed && <span>Logout</span>}
           </button>
@@ -116,9 +116,9 @@ export default function Layout({ children }: LayoutProps) {
       </aside>
 
       <div className="flex-1 flex flex-col">
-        <header className="h-14 bg-white border-b border-[--border] flex items-center justify-between px-6">
+        <header className="h-14 bg-white border-b border-[var(--border)] flex items-center justify-between px-6">
           <div className="flex items-center gap-3 flex-1 max-w-md">
-            <Search size={18} className="text-[--secondary]" />
+            <Search size={18} className="text-[var(--secondary)]" />
             <input type="text" placeholder="Search..." className="flex-1 border-none outline-none text-sm bg-transparent" />
           </div>
           <div className="flex items-center gap-4">
@@ -141,7 +141,7 @@ export default function Layout({ children }: LayoutProps) {
             </button>
 
             <button className="relative p-2 hover:bg-gray-100 rounded-full">
-              <Bell size={20} className="text-[--secondary]" />
+              <Bell size={20} className="text-[var(--secondary)]" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <div className="flex items-center gap-2">

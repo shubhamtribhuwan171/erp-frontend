@@ -92,7 +92,7 @@ export default function AdminOrganizations() {
                 <td className="px-6 py-4">
                   <button
                     onClick={() => toggleActive(org)}
-                    className="text-sm text-[--primary] hover:underline mr-3"
+                    className="text-sm text-[var(--primary)] hover:underline mr-3"
                   >
                     {org.is_active ? 'Disable' : 'Enable'}
                   </button>

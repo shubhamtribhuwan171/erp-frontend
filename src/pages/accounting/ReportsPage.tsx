@@ -28,11 +28,11 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-4">
-      <div><h1 className="text-2xl font-semibold">Reports</h1><p className="text-[--text-secondary]">Financial reports</p></div>
+      <div><h1 className="text-2xl font-semibold">Reports</h1><p className="text-[var(--text-secondary)]">Financial reports</p></div>
 
       <div className="flex gap-2">
         {['trial-balance', 'pnl'].map(type => (
-          <button key={type} onClick={() => setReportType(type)} className={`px-4 py-2 rounded-lg ${reportType === type ? 'bg-[--primary] text-white' : 'bg-white border'}`}>
+          <button key={type} onClick={() => setReportType(type)} className={`px-4 py-2 rounded-lg ${reportType === type ? 'bg-[var(--primary)] text-white' : 'bg-white border'}`}>
             {type === 'trial-balance' ? 'Trial Balance' : 'Profit & Loss'}
           </button>
         ))}
@@ -53,7 +53,7 @@ export default function ReportsPage() {
                     <td className="p-3 text-right">{acc.credit ? formatCurrency(acc.credit) : '-'}</td>
                   </tr>
                 ))}
-                {trialBalance.length === 0 && <tr><td colSpan={3} className="p-8 text-center text-[--secondary]">No data</td></tr>}
+                {trialBalance.length === 0 && <tr><td colSpan={3} className="p-8 text-center text-[var(--secondary)]">No data</td></tr>}
               </tbody>
             </table>
           ) : (

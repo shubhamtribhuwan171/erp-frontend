@@ -70,7 +70,7 @@ export default function AdminLogin() {
         </form>
 
         <div className="mt-6 text-center">
-          <a href="/login" className="text-sm text-[--primary] hover:underline">
+          <a href="/login" className="text-sm text-[var(--primary)] hover:underline">
             Back to ERP Login
           </a>
         </div>

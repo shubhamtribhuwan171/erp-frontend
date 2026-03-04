@@ -47,8 +47,8 @@ export default function AccountsList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-semibold">Chart of Accounts</h1><p className="text-[--text-secondary]">Manage accounts</p></div>
-        <button onClick={() => setShowForm(!showForm)} className="bg-[--primary] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> Add Account</button>
+        <div><h1 className="text-2xl font-semibold">Chart of Accounts</h1><p className="text-[var(--text-secondary)]">Manage accounts</p></div>
+        <button onClick={() => setShowForm(!showForm)} className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> Add Account</button>
       </div>
 
       {showForm && (
@@ -57,7 +57,7 @@ export default function AccountsList() {
             <div><label className="block text-sm mb-1">Code</label><input type="text" value={form.code} onChange={e => setForm({...form, code: e.target.value})} className="px-3 py-2 border rounded-lg w-32" required /></div>
             <div><label className="block text-sm mb-1">Name</label><input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="px-3 py-2 border rounded-lg w-64" required /></div>
             <div><label className="block text-sm mb-1">Type</label><select value={form.type} onChange={e => setForm({...form, type: e.target.value})} className="px-3 py-2 border rounded-lg"><option value="asset">Asset</option><option value="liability">Liability</option><option value="equity">Equity</option><option value="revenue">Revenue</option><option value="expense">Expense</option></select></div>
-            <button type="submit" className="bg-[--primary] text-white px-4 py-2 rounded-lg">Save</button>
+            <button type="submit" className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg">Save</button>
             <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 border rounded-lg">Cancel</button>
           </form>
         </div>
@@ -66,9 +66,9 @@ export default function AccountsList() {
       {loading ? <div>Loading...</div> : Object.entries(grouped as Record<string, any[]>).map(([type, items]) => (
         <div key={type} className="bg-white rounded-lg border overflow-hidden">
           <div className="bg-gray-50 px-4 py-2 border-b flex items-center gap-2">
-            {(() => { const Icon = typeIcons[type] || DollarSign; return <Icon size={18} className="text-[--secondary]" /> })()}
+            {(() => { const Icon = typeIcons[type] || DollarSign; return <Icon size={18} className="text-[var(--secondary)]" /> })()}
             <span className="font-medium capitalize">{type}</span>
-            <span className="text-sm text-[--secondary]">({items.length})</span>
+            <span className="text-sm text-[var(--secondary)]">({items.length})</span>
           </div>
           <table className="w-full">
             <tbody className="divide-y">

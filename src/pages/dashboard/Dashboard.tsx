@@ -13,16 +13,16 @@ interface KPICardProps {
 
 function KPICard({ title, value, change, icon: Icon, color }: KPICardProps) {
   return (
-    <div className="bg-white rounded-lg border border-[--border] p-5">
+    <div className="bg-white rounded-lg border border-[var(--border)] p-5">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-[--text-secondary]">{title}</p>
+          <p className="text-sm text-[var(--text-secondary)]">{title}</p>
           <p className="text-2xl font-semibold mt-1">{value}</p>
           {change !== undefined && (
-            <div className={`flex items-center gap-1 mt-2 text-sm ${change >= 0 ? 'text-[--success]' : 'text-[--danger]'}`}>
+            <div className={`flex items-center gap-1 mt-2 text-sm ${change >= 0 ? 'text-[var(--success)]' : 'text-[var(--danger)]'}`}>
               {change >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
               <span>{Math.abs(change)}%</span>
-              <span className="text-[--text-secondary]">vs last month</span>
+              <span className="text-[var(--text-secondary)]">vs last month</span>
             </div>
           )}
         </div>
@@ -66,7 +66,7 @@ export default function Dashboard() {
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="text-[--text-secondary]">Welcome back! Here's what's happening.</p>
+        <p className="text-[var(--text-secondary)]">Welcome back! Here's what's happening.</p>
       </div>
 
       {/* KPI Cards */}
@@ -102,24 +102,24 @@ export default function Dashboard() {
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="bg-white rounded-lg border border-[--border]">
-          <div className="flex items-center justify-between p-4 border-b border-[--border]">
+        <div className="bg-white rounded-lg border border-[var(--border)]">
+          <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
             <h2 className="font-semibold">Recent Orders</h2>
-            <Link to="/sales/orders" className="text-sm text-[--primary] hover:underline flex items-center gap-1">
+            <Link to="/sales/orders" className="text-sm text-[var(--primary)] hover:underline flex items-center gap-1">
               View all <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="divide-y divide-[--border]">
+          <div className="divide-y divide-[var(--border)]">
             {loading ? (
-              <div className="p-4 text-center text-[--text-secondary]">Loading...</div>
+              <div className="p-4 text-center text-[var(--text-secondary)]">Loading...</div>
             ) : orders.length === 0 ? (
-              <div className="p-4 text-center text-[--text-secondary]">No orders yet</div>
+              <div className="p-4 text-center text-[var(--text-secondary)]">No orders yet</div>
             ) : (
               orders.map((order) => (
                 <div key={order.id} className="p-4 flex items-center justify-between hover:bg-gray-50">
                   <div>
                     <p className="font-medium">{order.order_no}</p>
-                    <p className="text-sm text-[--text-secondary]">{order.customer?.name || 'N/A'}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">{order.customer?.name || 'N/A'}</p>
                   </div>
                   <div className="text-right">
                     <p className="font-medium">{formatCurrency(order.total_minor)}</p>
@@ -138,33 +138,33 @@ export default function Dashboard() {
         </div>
 
         {/* Low Stock Alerts */}
-        <div className="bg-white rounded-lg border border-[--border]">
-          <div className="flex items-center justify-between p-4 border-b border-[--border]">
+        <div className="bg-white rounded-lg border border-[var(--border)]">
+          <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
             <h2 className="font-semibold">Low Stock Items</h2>
-            <Link to="/inventory/items" className="text-sm text-[--primary] hover:underline flex items-center gap-1">
+            <Link to="/inventory/items" className="text-sm text-[var(--primary)] hover:underline flex items-center gap-1">
               View all <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="divide-y divide-[--border]">
+          <div className="divide-y divide-[var(--border)]">
             {loading ? (
-              <div className="p-4 text-center text-[--text-secondary]">Loading...</div>
+              <div className="p-4 text-center text-[var(--text-secondary)]">Loading...</div>
             ) : items.length === 0 ? (
-              <div className="p-4 text-center text-[--text-secondary]">No items yet</div>
+              <div className="p-4 text-center text-[var(--text-secondary)]">No items yet</div>
             ) : (
               items.slice(0, 5).map((item) => (
                 <div key={item.id} className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
-                      <Package size={20} className="text-[--secondary]" />
+                      <Package size={20} className="text-[var(--secondary)]" />
                     </div>
                     <div>
                       <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-[--text-secondary]">{item.sku}</p>
+                      <p className="text-sm text-[var(--text-secondary)]">{item.sku}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="font-medium">{item.reorder_level || 0} units</p>
-                    <p className="text-sm text-[--danger]">Low stock</p>
+                    <p className="text-sm text-[var(--danger)]">Low stock</p>
                   </div>
                 </div>
               ))
@@ -177,30 +177,30 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Link
           to="/sales/orders/new"
-          className="bg-white border border-[--border] rounded-lg p-4 hover:border-[--primary] hover:shadow-sm transition text-center"
+          className="bg-white border border-[var(--border)] rounded-lg p-4 hover:border-[var(--primary)] hover:shadow-sm transition text-center"
         >
-          <ShoppingCart className="mx-auto mb-2 text-[--primary]" size={24} />
+          <ShoppingCart className="mx-auto mb-2 text-[var(--primary)]" size={24} />
           <p className="font-medium">New Sales Order</p>
         </Link>
         <Link
           to="/inventory/items/new"
-          className="bg-white border border-[--border] rounded-lg p-4 hover:border-[--primary] hover:shadow-sm transition text-center"
+          className="bg-white border border-[var(--border)] rounded-lg p-4 hover:border-[var(--primary)] hover:shadow-sm transition text-center"
         >
-          <Package className="mx-auto mb-2 text-[--primary]" size={24} />
+          <Package className="mx-auto mb-2 text-[var(--primary)]" size={24} />
           <p className="font-medium">Add Item</p>
         </Link>
         <Link
           to="/sales/customers/new"
-          className="bg-white border border-[--border] rounded-lg p-4 hover:border-[--primary] hover:shadow-sm transition text-center"
+          className="bg-white border border-[var(--border)] rounded-lg p-4 hover:border-[var(--primary)] hover:shadow-sm transition text-center"
         >
-          <Users className="mx-auto mb-2 text-[--primary]" size={24} />
+          <Users className="mx-auto mb-2 text-[var(--primary)]" size={24} />
           <p className="font-medium">Add Customer</p>
         </Link>
         <Link
           to="/purchases/orders/new"
-          className="bg-white border border-[--border] rounded-lg p-4 hover:border-[--primary] hover:shadow-sm transition text-center"
+          className="bg-white border border-[var(--border)] rounded-lg p-4 hover:border-[var(--primary)] hover:shadow-sm transition text-center"
         >
-          <ShoppingCart className="mx-auto mb-2 text-[--primary]" size={24} />
+          <ShoppingCart className="mx-auto mb-2 text-[var(--primary)]" size={24} />
           <p className="font-medium">Purchase Order</p>
         </Link>
       </div>

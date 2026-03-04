@@ -17,23 +17,23 @@ export default function ContactsList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-semibold">Contacts</h1><p className="text-[--secondary]">All contacts</p></div>
-        <Link to="/crm/contacts/new" className="bg-[--primary] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> Add Contact</Link>
+        <div><h1 className="text-2xl font-semibold">Contacts</h1><p className="text-[var(--secondary)]">All contacts</p></div>
+        <Link to="/crm/contacts/new" className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> Add Contact</Link>
       </div>
 
       <div className="bg-white rounded-lg border overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[--secondary]">Name</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[--secondary]">Code</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[--secondary]">Email</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[--secondary]">Phone</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--secondary)]">Name</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--secondary)]">Code</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--secondary)]">Email</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--secondary)]">Phone</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {loading ? <tr><td colSpan={4} className="px-4 py-8 text-center">Loading...</td></tr> :
-            contacts.length === 0 ? <tr><td colSpan={4} className="px-4 py-8 text-center text-[--secondary]">No contacts</td></tr> :
+            contacts.length === 0 ? <tr><td colSpan={4} className="px-4 py-8 text-center text-[var(--secondary)]">No contacts</td></tr> :
             contacts.map(c => (
               <tr key={c.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3">
@@ -42,7 +42,7 @@ export default function ContactsList() {
                     <span className="font-medium">{c.name}</span>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-sm text-[--secondary]">{c.code}</td>
+                <td className="px-4 py-3 text-sm text-[var(--secondary)]">{c.code}</td>
                 <td className="px-4 py-3 text-sm">{c.email || '-'}</td>
                 <td className="px-4 py-3 text-sm">{c.phone || '-'}</td>
               </tr>

@@ -24,8 +24,8 @@ export default function UnitsList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-semibold">Units</h1><p className="text-[--text-secondary]">Manage units of measure</p></div>
-        <button onClick={() => setShowForm(!showForm)} className="bg-[--primary] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> Add Unit</button>
+        <div><h1 className="text-2xl font-semibold">Units</h1><p className="text-[var(--text-secondary)]">Manage units of measure</p></div>
+        <button onClick={() => setShowForm(!showForm)} className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} /> Add Unit</button>
       </div>
 
       {showForm && (
@@ -33,7 +33,7 @@ export default function UnitsList() {
           <form onSubmit={handleSubmit} className="flex gap-4">
             <input type="text" placeholder="Code (e.g., PCS)" value={form.code} onChange={e => setForm({...form, code: e.target.value})} className="px-3 py-2 border rounded-lg" required />
             <input type="text" placeholder="Name (e.g., Pieces)" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="px-3 py-2 border rounded-lg flex-1" required />
-            <button type="submit" className="bg-[--primary] text-white px-4 py-2 rounded-lg">Save</button>
+            <button type="submit" className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg">Save</button>
             <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 border rounded-lg">Cancel</button>
           </form>
         </div>
@@ -43,7 +43,7 @@ export default function UnitsList() {
         {loading ? <div>Loading...</div> : units.map(u => (
           <div key={u.id} className="bg-white rounded-lg border p-4">
             <p className="font-medium">{u.name}</p>
-            <p className="text-sm text-[--secondary]">{u.code}</p>
+            <p className="text-sm text-[var(--secondary)]">{u.code}</p>
           </div>
         ))}
       </div>
