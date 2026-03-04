@@ -11,8 +11,23 @@ import WarehousesList from './pages/inventory/WarehousesList';
 import CustomersList from './pages/sales/CustomersList';
 import NewCustomerForm from './pages/sales/NewCustomerForm';
 import OrdersList from './pages/sales/OrdersList';
+import NewOrder from './pages/sales/NewOrder';
+import OrderDetails from './pages/sales/OrderDetails';
+import OrderEdit from './pages/sales/OrderEdit';
+import CustomerDetails from './pages/sales/CustomerDetails';
+import CustomerEdit from './pages/sales/CustomerEdit';
+
 import PurchaseOrdersList from './pages/purchases/PurchaseOrdersList';
 import VendorsList from './pages/purchases/VendorsList';
+import NewPurchaseOrder from './pages/purchases/NewPurchaseOrder';
+import PurchaseOrderDetails from './pages/purchases/PurchaseOrderDetails';
+import PurchaseOrderEdit from './pages/purchases/PurchaseOrderEdit';
+import VendorDetails from './pages/purchases/VendorDetails';
+import VendorEdit from './pages/purchases/VendorEdit';
+
+import ItemDetails from './pages/inventory/ItemDetails';
+import ItemEdit from './pages/inventory/ItemEdit';
+
 import AccountsList from './pages/accounting/AccountsList';
 import JournalList from './pages/accounting/JournalList';
 import ReportsPage from './pages/accounting/ReportsPage';
@@ -58,6 +73,8 @@ export default function App() {
           {/* Inventory */}
           <Route path="/inventory/items" element={<ProtectedRoute><ItemsList /></ProtectedRoute>} />
           <Route path="/inventory/items/new" element={<ProtectedRoute><NewItemForm /></ProtectedRoute>} />
+          <Route path="/inventory/items/:id" element={<ProtectedRoute><ItemDetails /></ProtectedRoute>} />
+          <Route path="/inventory/items/:id/edit" element={<ProtectedRoute><ItemEdit /></ProtectedRoute>} />
           <Route path="/inventory/categories" element={<ProtectedRoute><CategoriesList /></ProtectedRoute>} />
           <Route path="/inventory/units" element={<ProtectedRoute><UnitsList /></ProtectedRoute>} />
           <Route path="/inventory/warehouses" element={<ProtectedRoute><WarehousesList /></ProtectedRoute>} />
@@ -65,11 +82,21 @@ export default function App() {
           {/* Sales */}
           <Route path="/sales/customers" element={<ProtectedRoute><CustomersList /></ProtectedRoute>} />
           <Route path="/sales/customers/new" element={<ProtectedRoute><NewCustomerForm /></ProtectedRoute>} />
+          <Route path="/sales/customers/:id" element={<ProtectedRoute><CustomerDetails /></ProtectedRoute>} />
+          <Route path="/sales/customers/:id/edit" element={<ProtectedRoute><CustomerEdit /></ProtectedRoute>} />
           <Route path="/sales/orders" element={<ProtectedRoute><OrdersList /></ProtectedRoute>} />
+          <Route path="/sales/orders/new" element={<ProtectedRoute><NewOrder /></ProtectedRoute>} />
+          <Route path="/sales/orders/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
+          <Route path="/sales/orders/:id/edit" element={<ProtectedRoute><OrderEdit /></ProtectedRoute>} />
           
           {/* Purchases */}
           <Route path="/purchases/orders" element={<ProtectedRoute><PurchaseOrdersList /></ProtectedRoute>} />
+          <Route path="/purchases/orders/new" element={<ProtectedRoute><NewPurchaseOrder /></ProtectedRoute>} />
+          <Route path="/purchases/orders/:id" element={<ProtectedRoute><PurchaseOrderDetails /></ProtectedRoute>} />
+          <Route path="/purchases/orders/:id/edit" element={<ProtectedRoute><PurchaseOrderEdit /></ProtectedRoute>} />
           <Route path="/purchases/vendors" element={<ProtectedRoute><VendorsList /></ProtectedRoute>} />
+          <Route path="/purchases/vendors/:id" element={<ProtectedRoute><VendorDetails /></ProtectedRoute>} />
+          <Route path="/purchases/vendors/:id/edit" element={<ProtectedRoute><VendorEdit /></ProtectedRoute>} />
           
           {/* Accounting */}
           <Route path="/accounting/accounts" element={<ProtectedRoute><AccountsList /></ProtectedRoute>} />
