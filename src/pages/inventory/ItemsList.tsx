@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Search, Edit, Trash2, Eye, Package, AlertTriangle } from 'lucide-react'
+import { Plus, Search, Filter, Edit, Trash2, Eye, Package } from 'lucide-react'
 import { inventory } from '../../lib/api'
 import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
 import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
@@ -74,15 +74,21 @@ export default function ItemsList() {
 
         {/* Search */}
         <div className="bg-white rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="relative">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
-            <input
-              type="text"
-              placeholder="Search items..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
-            />
+          <div className="flex items-center gap-4">
+            <div className="flex-1 relative">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
+              <input
+                type="text"
+                placeholder="Search items..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+              />
+            </div>
+            <button className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 text-gray-600 rounded-xl hover:bg-gray-100 transition-colors">
+              <Filter size={16} />
+              Filters
+            </button>
           </div>
         </div>
 
@@ -121,48 +127,41 @@ export default function ItemsList() {
                   </td>
                 </tr>
               ) : (
-                items.map((item) => {
-                  const stock = Number(item.stock?.[0]?.qty_on_hand ?? item.on_hand ?? 0) || 0
-                  const needsReorder = stock <= (item.reorder_level || 0)
-                  return (
-                    <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4">
-                        <span className="font-mono text-sm text-gray-500">{item.sku || '-'}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <Link to={`/inventory/items/${item.id}`} className="font-medium text-gray-900 hover:text-gray-700">
-                          {item.name}
+                items.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <Link to={`/inventory/items/${item.id}`} className="font-mono text-sm text-gray-500 hover:text-gray-700">
+                        {item.sku || '-'}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Link to={`/inventory/items/${item.id}`} className="font-medium text-gray-900 hover:text-gray-700">
+                        {item.name}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{item.category?.name || '-'}</td>
+                    <td className="px-6 py-4 text-sm text-right text-gray-600">{formatCurrency(item.standard_cost_minor)}</td>
+                    <td className="px-6 py-4 text-sm text-right text-gray-900 font-medium">{formatCurrency(item.sale_price_minor)}</td>
+                    <td className="px-6 py-4 text-sm text-right">
+                      <span className={`${(item.stock?.[0]?.qty_on_hand || 0) <= (item.reorder_level || 0) ? 'text-amber-600' : 'text-gray-900'}`}>
+                        {item.stock?.[0]?.qty_on_hand || 0}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Link to={`/inventory/items/${item.id}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="View">
+                          <Eye size={16} className="text-gray-400" />
                         </Link>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{item.category?.name || '-'}</td>
-                      <td className="px-6 py-4 text-sm text-right text-gray-500">{formatCurrency(item.standard_cost_minor)}</td>
-                      <td className="px-6 py-4 text-sm text-right text-gray-500">{formatCurrency(item.sale_price_minor)}</td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          {needsReorder && item.track_inventory && (
-                            <AlertTriangle size={14} className="text-amber-500" />
-                          )}
-                          <span className={`font-medium ${needsReorder ? 'text-amber-600' : 'text-gray-900'}`}>
-                            {stock}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <Link to={`/inventory/items/${item.id}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="View">
-                            <Eye size={16} className="text-gray-400" />
-                          </Link>
-                          <Link to={`/inventory/items/${item.id}/edit`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
-                            <Edit size={16} className="text-gray-400" />
-                          </Link>
-                          <button onClick={() => handleDelete(item.id)} className="p-2 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
-                            <Trash2 size={16} className="text-red-400" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })
+                        <Link to={`/inventory/items/${item.id}/edit`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
+                          <Edit size={16} className="text-gray-400" />
+                        </Link>
+                        <button onClick={() => handleDelete(item.id)} className="p-2 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                          <Trash2 size={16} className="text-red-400" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
