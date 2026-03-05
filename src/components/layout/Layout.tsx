@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { AppProvider, useApp, type ModuleKey } from '../../lib/app-context'
 import {
@@ -119,7 +119,10 @@ function LayoutInner({ children }: LayoutProps) {
     document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
   )
 
-  const { company, modules, loading } = useApp()
+  const { company, modules, loading, user } = useApp()
+
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement | null>(null)
 
   const toggleMenu = (label: string) => {
     setExpandedMenus((prev) =>
@@ -153,6 +156,22 @@ function LayoutInner({ children }: LayoutProps) {
       window.location.href = '/'
     }
   }, [location.pathname, modules])
+
+  // Close the user popover when clicking outside.
+  useEffect(() => {
+    if (!userMenuOpen) return
+
+    const onMouseDown = (e: MouseEvent) => {
+      const target = e.target as Node | null
+      if (!target) return
+      if (userMenuRef.current && !userMenuRef.current.contains(target)) {
+        setUserMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', onMouseDown)
+    return () => document.removeEventListener('mousedown', onMouseDown)
+  }, [userMenuOpen])
 
   return (
     <div className="min-h-screen bg-[var(--background)] flex">
@@ -241,24 +260,66 @@ function LayoutInner({ children }: LayoutProps) {
           ))}
         </nav>
 
-        <div className="border-t border-[var(--border)] p-4 space-y-2">
-          <a
-            href="/admin/dashboard"
-            className="flex items-center gap-3 text-sm text-gray-600 hover:bg-gray-100 w-full px-2 py-2 rounded"
-          >
-            <Shield size={18} />
-            {!collapsed && <span>Admin Portal</span>}
-          </a>
-          <button
-            onClick={() => {
-              localStorage.removeItem('token')
-              window.location.href = '/login'
-            }}
-            className="flex items-center gap-3 text-sm text-[var(--danger)] hover:bg-red-50 w-full px-2 py-2 rounded"
-          >
-            <LogOut size={18} />
-            {!collapsed && <span>Logout</span>}
-          </button>
+        <div className="border-t border-[var(--border)] p-3">
+          <div ref={userMenuRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setUserMenuOpen((v) => !v)}
+              className={`w-full flex items-center gap-3 rounded-lg hover:bg-gray-50 px-2 py-2 ${collapsed ? 'justify-center' : ''}`}
+              aria-haspopup="menu"
+              aria-expanded={userMenuOpen}
+            >
+              <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                {(user?.email?.[0] ?? 'U').toUpperCase()}
+              </div>
+
+              {!collapsed && (
+                <div className="min-w-0 flex-1 text-left">
+                  <div className="text-sm font-semibold text-gray-900 truncate">
+                    {user?.email ?? 'User'}
+                  </div>
+                  <div className="text-xs text-[var(--text-secondary)] truncate">
+                    {user?.role ? user.role.toUpperCase() : '—'}
+                    {company?.name ? ` • ${company.name}` : ''}
+                  </div>
+                </div>
+              )}
+            </button>
+
+            {userMenuOpen && (
+              <div
+                role="menu"
+                className={`absolute ${collapsed ? 'left-full ml-2 bottom-0' : 'left-0 right-0 bottom-full mb-2'} bg-white border border-[var(--border)] shadow-lg rounded-lg overflow-hidden`}
+              >
+
+                {(user?.isAdmin || user?.role === 'owner' || user?.role === 'admin') && (
+                  <Link
+                    to="/admin/dashboard"
+                    role="menuitem"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    <Shield size={16} />
+                    Admin portal
+                  </Link>
+                )}
+
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setUserMenuOpen(false)
+                    localStorage.removeItem('token')
+                    window.location.href = '/login'
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[var(--danger)] hover:bg-red-50"
+                >
+                  <LogOut size={16} />
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </aside>
 
