@@ -56,6 +56,7 @@ import EmployeesList from './pages/hr/EmployeesList';
 import DepartmentsList from './pages/hr/DepartmentsList';
 import AttendancePage from './pages/hr/AttendancePage';
 import EmployeeUpsertPage from './pages/hr/employees/EmployeeUpsertPage';
+import EmployeeDetails from './pages/hr/employees/EmployeeDetails';
 
 import LeadsList from './pages/crm/LeadsList';
 import ContactsList from './pages/crm/ContactsList';
@@ -161,7 +162,8 @@ export default function App() {
           {/* HR */}
           <Route path="/hr/employees" element={<ProtectedRoute><EmployeesList /></ProtectedRoute>} />
           <Route path="/hr/employees/new" element={<ProtectedRoute><EmployeeUpsertPage /></ProtectedRoute>} />
-          <Route path="/hr/employees/:id" element={<ProtectedRoute><EmployeeUpsertPage /></ProtectedRoute>} />
+          <Route path="/hr/employees/:id" element={<ProtectedRoute><EmployeeDetails /></ProtectedRoute>} />
+          <Route path="/hr/employees/:id/edit" element={<ProtectedRoute><EmployeeUpsertPage /></ProtectedRoute>} />
           <Route path="/hr/departments" element={<ProtectedRoute><DepartmentsList /></ProtectedRoute>} />
           <Route path="/hr/attendance" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
           
