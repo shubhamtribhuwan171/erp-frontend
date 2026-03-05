@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Package } from 'lucide-react'
 import { inventory } from '../../lib/api'
 
 export default function ItemEdit() {
@@ -88,108 +88,229 @@ export default function ItemEdit() {
     }
   }
 
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link to={id ? `/inventory/items/${id}` : '/inventory/items'} className="p-2 hover:bg-gray-100 rounded">
-            <ArrowLeft size={18} className="text-[var(--secondary)]" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-semibold">Edit Item</h1>
-            <p className="text-[var(--text-secondary)]">Update item details</p>
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] p-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <Link to={`/inventory/items/${id}`} className="p-2.5 hover:bg-white hover:shadow-sm rounded-xl transition-all duration-200">
+              <ArrowLeft size={20} className="text-gray-400" />
+            </Link>
+            <div className="h-6 w-32 bg-gray-100 rounded animate-pulse" />
+          </div>
+          <div className="bg-white rounded-2xl p-8 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+            <div className="space-y-6">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="h-12 bg-gray-50 rounded-xl animate-pulse" />
+              ))}
+            </div>
           </div>
         </div>
-
-        <button
-          type="button"
-          disabled={saving || loading}
-          onClick={handleSave}
-          className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 disabled:opacity-50"
-        >
-          <Save size={18} />
-          {saving ? 'Saving…' : 'Save'}
-        </button>
       </div>
+    )
+  }
 
-      {error && (
-        <div className="bg-red-50 text-red-700 border border-red-200 rounded-lg p-3 text-sm">
-          {error}
+  return (
+    <div className="min-h-screen bg-[#FAFAFA] p-6">
+      <div className="max-w-3xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to={`/inventory/items/${id}`} className="p-2.5 hover:bg-white hover:shadow-sm rounded-xl transition-all duration-200">
+              <ArrowLeft size={20} className="text-gray-400" />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Edit Item</h1>
+              <p className="text-sm text-gray-400">Update item details</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            disabled={saving || loading}
+            onClick={handleSave}
+            className="px-5 py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2 disabled:opacity-50"
+          >
+            <Save size={16} />
+            {saving ? 'Saving…' : 'Save Changes'}
+          </button>
         </div>
-      )}
 
-      <div className="bg-white rounded-lg border border-[var(--border)] p-4">
-        {loading ? (
-          <div className="py-8 text-center text-[var(--secondary)]">Loading…</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Name</label>
-              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Status</label>
-              <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg">
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Category</label>
-              <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg">
-                <option value="">Select category</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name} ({c.code})</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Unit</label>
-              <select value={form.unit_id} onChange={(e) => setForm({ ...form, unit_id: e.target.value })} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg">
-                <option value="">Select unit</option>
-                {units.map((u) => (
-                  <option key={u.id} value={u.id}>{u.code ?? u.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">Description</label>
-              <textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg" />
-            </div>
-
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={!!form.track_inventory} onChange={(e) => setForm({ ...form, track_inventory: e.target.checked })} />
-                Track inventory
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={!!form.is_serialized} onChange={(e) => setForm({ ...form, is_serialized: e.target.checked })} />
-                Serialized
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={!!form.is_batch_tracked} onChange={(e) => setForm({ ...form, is_batch_tracked: e.target.checked })} />
-                Batch tracked
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Reorder Level</label>
-              <input type="number" value={form.reorder_level} onChange={(e) => setForm({ ...form, reorder_level: e.target.value })} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Reorder Qty</label>
-              <input type="number" value={form.reorder_qty} onChange={(e) => setForm({ ...form, reorder_qty: e.target.value })} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Standard Cost (minor)</label>
-              <input type="number" value={form.standard_cost_minor} onChange={(e) => setForm({ ...form, standard_cost_minor: e.target.value })} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Sale Price (minor)</label>
-              <input type="number" value={form.sale_price_minor} onChange={(e) => setForm({ ...form, sale_price_minor: e.target.value })} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg" />
-            </div>
+        {/* Error */}
+        {error && (
+          <div className="bg-red-50 border border-red-100 rounded-xl p-4 text-sm text-red-600">
+            {error}
           </div>
         )}
+
+        {/* Form */}
+        <div className="bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100">
+            <h2 className="font-semibold text-gray-900">Basic Information</h2>
+          </div>
+          
+          <div className="p-6 space-y-6">
+            {/* Name & Status */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Item Name</label>
+                <input 
+                  value={form.name} 
+                  onChange={(e) => setForm({ ...form, name: e.target.value })} 
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+                  placeholder="Enter item name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select 
+                  value={form.status} 
+                  onChange={(e) => setForm({ ...form, status: e.target.value })} 
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Category & Unit */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                <select 
+                  value={form.category_id} 
+                  onChange={(e) => setForm({ ...form, category_id: e.target.value })} 
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+                >
+                  <option value="">Select category</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name} ({c.code})</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Unit</label>
+                <select 
+                  value={form.unit_id} 
+                  onChange={(e) => setForm({ ...form, unit_id: e.target.value })} 
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+                >
+                  <option value="">Select unit</option>
+                  {units.map((u) => (
+                    <option key={u.id} value={u.id}>{u.code ?? u.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea 
+                rows={3} 
+                value={form.description} 
+                onChange={(e) => setForm({ ...form, description: e.target.value })} 
+                className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all resize-none"
+                placeholder="Enter description (optional)"
+              />
+            </div>
+          </div>
+
+          <div className="px-6 py-4 border-t border-b border-gray-100 bg-gray-50/50">
+            <h2 className="font-semibold text-gray-900">Pricing</h2>
+          </div>
+
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Standard Cost (₹)</label>
+                <input 
+                  type="number" 
+                  value={form.standard_cost_minor} 
+                  onChange={(e) => setForm({ ...form, standard_cost_minor: e.target.value })} 
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+                  placeholder="0.00"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sale Price (₹)</label>
+                <input 
+                  type="number" 
+                  value={form.sale_price_minor} 
+                  onChange={(e) => setForm({ ...form, sale_price_minor: e.target.value })} 
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="px-6 py-4 border-t border-b border-gray-100 bg-gray-50/50">
+            <h2 className="font-semibold text-gray-900">Inventory Settings</h2>
+          </div>
+
+          <div className="p-6 space-y-6">
+            {/* Checkboxes */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <label className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                <input 
+                  type="checkbox" 
+                  checked={!!form.track_inventory} 
+                  onChange={(e) => setForm({ ...form, track_inventory: e.target.checked })} 
+                  className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-gray-200"
+                />
+                <span className="text-sm text-gray-700">Track Inventory</span>
+              </label>
+              <label className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                <input 
+                  type="checkbox" 
+                  checked={!!form.is_serialized} 
+                  onChange={(e) => setForm({ ...form, is_serialized: e.target.checked })} 
+                  className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-gray-200"
+                />
+                <span className="text-sm text-gray-700">Serialized</span>
+              </label>
+              <label className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                <input 
+                  type="checkbox" 
+                  checked={!!form.is_batch_tracked} 
+                  onChange={(e) => setForm({ ...form, is_batch_tracked: e.target.checked })} 
+                  className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-gray-200"
+                />
+                <span className="text-sm text-gray-700">Batch Tracked</span>
+              </label>
+            </div>
+
+            {/* Reorder */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Reorder Level</label>
+                <input 
+                  type="number" 
+                  value={form.reorder_level} 
+                  onChange={(e) => setForm({ ...form, reorder_level: e.target.value })} 
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+                  placeholder="0"
+                />
+                <p className="mt-1.5 text-xs text-gray-400">Alert when stock falls below this</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Reorder Quantity</label>
+                <input 
+                  type="number" 
+                  value={form.reorder_qty} 
+                  onChange={(e) => setForm({ ...form, reorder_qty: e.target.value })} 
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+                  placeholder="0"
+                />
+                <p className="mt-1.5 text-xs text-gray-400">Default quantity to reorder</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   )
