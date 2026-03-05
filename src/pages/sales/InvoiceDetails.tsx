@@ -39,7 +39,7 @@ export default function InvoiceDetails() {
 
   const title = useMemo(() => {
     if (!invoice) return 'Invoice'
-    return invoice.invoice_no || invoice.number || 'Invoice'
+    return invoice.order_no || invoice.invoice_no || invoice.number || 'Invoice'
   }, [invoice])
 
   if (error) {
