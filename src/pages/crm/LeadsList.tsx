@@ -67,7 +67,11 @@ export default function LeadsList() {
           </div>
         ) : (
           leads.map((lead) => (
-            <div key={lead.id} className="bg-white rounded-lg border p-4">
+            <Link
+              key={lead.id}
+              to={`/crm/leads/${lead.id}`}
+              className="bg-white rounded-lg border p-4 block hover:shadow-sm"
+            >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 font-semibold">
@@ -98,7 +102,7 @@ export default function LeadsList() {
                   </div>
                 )}
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>
