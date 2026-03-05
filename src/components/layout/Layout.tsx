@@ -158,6 +158,9 @@ function LayoutInner({ children }: LayoutProps) {
       const sales = features?.sales
       const pur = features?.purchases
       const hr = features?.hr
+      const acc = features?.accounting
+      const crm = features?.crm
+      const set = features?.settings
 
       if (path.startsWith('/inventory/transactions')) return inv?.transactions ?? true
       if (path.startsWith('/inventory/transfers')) return inv?.transfers ?? true
@@ -172,6 +175,16 @@ function LayoutInner({ children }: LayoutProps) {
       if (path.startsWith('/purchases/returns')) return pur?.returns ?? true
 
       if (path.startsWith('/hr/attendance')) return hr?.attendance ?? true
+
+      if (path.startsWith('/accounting/accounts')) return acc?.accounts ?? true
+      if (path.startsWith('/accounting/journal')) return acc?.journal ?? true
+      if (path.startsWith('/accounting/reports')) return acc?.reports ?? true
+
+      if (path.startsWith('/crm/leads')) return crm?.leads ?? true
+      if (path.startsWith('/crm/contacts')) return crm?.contacts ?? true
+
+      if (path.startsWith('/settings/users')) return set?.users ?? true
+      if (path.startsWith('/settings/industry-profiles')) return set?.industryProfiles ?? true
 
       return true
     }

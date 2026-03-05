@@ -34,6 +34,9 @@ export type EffectiveFeatures = {
   sales?: { quotations?: boolean; invoices?: boolean; returns?: boolean }
   purchases?: { receipts?: boolean; vendorInvoices?: boolean; returns?: boolean }
   hr?: { attendance?: boolean }
+  accounting?: { accounts?: boolean; journal?: boolean; reports?: boolean }
+  crm?: { leads?: boolean; contacts?: boolean }
+  settings?: { users?: boolean; industryProfiles?: boolean }
   [key: string]: any
 }
 
