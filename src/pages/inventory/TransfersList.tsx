@@ -14,7 +14,7 @@ export default function TransfersList() {
   useEffect(() => {
     const fetch = async () => {
       setLoading(true)
-      try { const res = await inventoryMovementsApi.list(); setTransfers(res.data.data || []) }
+      try { const res = await inventoryMovementsApi.transactions.list(); setTransfers(res.data.data?.transactions || []) }
       catch (e) { setError(e) }
       finally { setLoading(false) }
     }

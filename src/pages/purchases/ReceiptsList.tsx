@@ -17,7 +17,7 @@ export default function ReceiptsList() {
       setError(null)
       try {
         const res = await purchaseReceipts.list()
-        setReceipts(res.data.data || [])
+        setReceipts(res.data.data?.receipts || [])
       } catch (e) { setError(e) }
       finally { setLoading(false) }
     }

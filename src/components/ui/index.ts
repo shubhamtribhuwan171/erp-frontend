@@ -19,3 +19,5 @@ export { default as StatsCard } from './StatsCard'
 export { default as StatusBadge } from './StatusBadge'
 export { default as Tabs, TabPanel } from './Tabs'
 export { ToastProvider, useToast } from './Toast'
+export { default as Badge } from './Badge'
+

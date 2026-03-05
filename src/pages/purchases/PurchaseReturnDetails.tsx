@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { RotateCcw, User, Calendar, DollarSign } from 'lucide-react'
-import { salesDocs } from '../../lib/sales-docs'
+import { RotateCcw, User, Calendar, Package } from 'lucide-react'
+import { purchaseReturns } from '../../lib/purchases-returns'
 import { Card, PageHeader, StatusBadge, DataTable } from '../../components/ui'
 
 function formatCurrency(minor?: number) {
@@ -14,7 +14,7 @@ function formatDate(date?: string) {
   return new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-export default function ReturnDetails() {
+export default function PurchaseReturnDetails() {
   const { id } = useParams()
   const [loading, setLoading] = useState(true)
   const [ret, setRet] = useState<any>(null)
@@ -26,7 +26,7 @@ export default function ReturnDetails() {
       setLoading(true)
       setError('')
       try {
-        const res = await salesDocs.returns.get(id)
+        const res = await purchaseReturns.get(id)
         setRet(res.data.data)
       } catch (e: any) {
         setError(e?.message || 'Failed to load return')
@@ -64,9 +64,9 @@ export default function ReturnDetails() {
       <div className="max-w-5xl mx-auto space-y-6">
         
         <PageHeader
-          backPath="/sales/returns"
-          title={`Return ${ret.return_no}`}
-          subtitle="Sales Return Details"
+          backPath="/purchases/returns"
+          title={`Purchase Return ${ret.return_no}`}
+          subtitle="Vendor Return Details"
         />
 
         <Card>
@@ -87,16 +87,16 @@ export default function ReturnDetails() {
 
           <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><User size={14} /> Customer</div>
-              <div className="font-medium">{ret.customer?.name || '-'}</div>
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><User size={14} /> Vendor</div>
+              <div className="font-medium">{ret.vendor?.name || '-'}</div>
             </div>
             <div className="p-4 bg-gray-50 rounded-xl">
               <div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><Calendar size={14} /> Date</div>
               <div className="font-medium">{formatDate(ret.return_date)}</div>
             </div>
             <div className="p-4 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-2 text-gray-400 text-sm mb-1">Invoice</div>
-              <div className="font-medium">{ret.invoice?.invoice_no || '-'}</div>
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><Package size={14} /> PO Ref</div>
+              <div className="font-medium">{ret.po_no || '-'}</div>
             </div>
           </div>
         </Card>
@@ -108,7 +108,7 @@ export default function ReturnDetails() {
             </div>
             <DataTable
               columns={[
-                { key: 'item', header: 'Item', render: (i: any) => i.item?.name || i.description || '-' },
+                { key: 'item', header: 'Item', render: (i: any) => i.item?.name || '-' },
                 { key: 'qty', header: 'Qty', align: 'right' as const },
                 { key: 'reason', header: 'Reason' },
               ]}

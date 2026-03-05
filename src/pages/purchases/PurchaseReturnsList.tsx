@@ -14,7 +14,7 @@ export default function PurchaseReturnsList() {
   useEffect(() => {
     const fetch = async () => {
       setLoading(true)
-      try { const res = await purchaseReturns.list(); setReturns(res.data.data || []) }
+      try { const res = await purchaseReturns.list(); setReturns(res.data.data?.returns || []) }
       catch (e) { setError(e) }
       finally { setLoading(false) }
     }

@@ -16,7 +16,7 @@ export default function WarehousesList() {
       setError(null)
       try {
         const res = await inventory.warehouses.list()
-        setWarehouses(res.data.data || [])
+        setWarehouses(res.data.data?.warehouses || [])
       } catch (e) {
         console.error(e)
         setError(e)

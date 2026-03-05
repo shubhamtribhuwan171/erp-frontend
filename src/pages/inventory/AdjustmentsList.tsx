@@ -14,7 +14,7 @@ export default function AdjustmentsList() {
   useEffect(() => {
     const fetch = async () => {
       setLoading(true)
-      try { const res = await inventoryMovementsApi.list(); setAdjustments(res.data.data || []) }
+      try { const res = await inventoryMovementsApi.transactions.list(); setAdjustments(res.data.data?.transactions || []) }
       catch (e) { setError(e) }
       finally { setLoading(false) }
     }

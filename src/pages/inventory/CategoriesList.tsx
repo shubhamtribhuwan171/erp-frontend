@@ -18,7 +18,7 @@ export default function CategoriesList() {
       setError(null)
       try {
         const res = await inventory.categories.list()
-        setCategories(res.data.data || [])
+        setCategories(res.data.data?.categories || [])
       } catch (e) {
         console.error(e)
         setError(e)

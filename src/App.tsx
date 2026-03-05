@@ -26,6 +26,12 @@ import NewQuotation from './pages/sales/NewQuotation';
 import QuotationDetails from './pages/sales/QuotationDetails';
 import InvoicesList from './pages/sales/InvoicesList';
 import InvoiceDetails from './pages/sales/InvoiceDetails';
+import QuotationDetails from './pages/sales/QuotationDetails';
+import ReturnDetails from './pages/sales/ReturnDetails';
+import ReceiptDetails from './pages/purchases/ReceiptDetails';
+import VendorInvoiceDetails from './pages/purchases/VendorInvoiceDetails';
+import PurchaseReturnDetails from './pages/purchases/PurchaseReturnDetails';
+import ContactDetails from './pages/crm/ContactDetails';
 import ReturnsList from './pages/sales/ReturnsList';
 import NewReturn from './pages/sales/NewReturn';
 import ReturnDetails from './pages/sales/ReturnDetails';
@@ -134,6 +140,12 @@ export default function App() {
           <Route path="/sales/quotations/:id" element={<ProtectedRoute><QuotationDetails /></ProtectedRoute>} />
           <Route path="/sales/invoices" element={<ProtectedRoute><InvoicesList /></ProtectedRoute>} />
           <Route path="/sales/invoices/:id" element={<ProtectedRoute><InvoiceDetails /></ProtectedRoute>} />
+          <Route path="/sales/quotations/:id" element={<ProtectedRoute><QuotationDetails /></ProtectedRoute>} />
+          <Route path="/sales/returns/:id" element={<ProtectedRoute><ReturnDetails /></ProtectedRoute>} />
+          <Route path="/purchases/receipts/:id" element={<ProtectedRoute><ReceiptDetails /></ProtectedRoute>} />
+          <Route path="/purchases/vendor-invoices/:id" element={<ProtectedRoute><VendorInvoiceDetails /></ProtectedRoute>} />
+          <Route path="/purchases/returns/:id" element={<ProtectedRoute><PurchaseReturnDetails /></ProtectedRoute>} />
+          <Route path="/crm/contacts/:id" element={<ProtectedRoute><ContactDetails /></ProtectedRoute>} />
           <Route path="/sales/returns" element={<ProtectedRoute><ReturnsList /></ProtectedRoute>} />
           <Route path="/sales/returns/new" element={<ProtectedRoute><NewReturn /></ProtectedRoute>} />
           <Route path="/sales/returns/:id" element={<ProtectedRoute><ReturnDetails /></ProtectedRoute>} />

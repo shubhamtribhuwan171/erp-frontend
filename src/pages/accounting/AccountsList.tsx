@@ -18,7 +18,7 @@ export default function AccountsList() {
       setError(null)
       try {
         const res = await accounting.accounts.list()
-        setAccounts(res.data.data || [])
+        setAccounts(res.data.data?.accounts || [])
       } catch (e) {
         console.error(e)
         setError(e)
@@ -36,21 +36,27 @@ export default function AccountsList() {
   }
 
   const columns = [
-    { key: 'code', header: 'Code', render: (a: any) => (
-      <Link to={`/accounting/accounts/${a.id}`} className="font-mono text-sm text-gray-500 hover:text-gray-700">{a.code}</Link>
-    )},
-    { key: 'name', header: 'Name', render: (a: any) => (
-      <Link to={`/accounting/accounts/${a.id}`} className="font-medium text-gray-900 hover:text-gray-700">{a.name}</Link>
-    )},
-    { key: 'type', header: 'Type', align: 'center' as const, render: (a: any) => (
-      <StatusBadge status={a.type} map={{
-        asset: { bg: 'bg-blue-50 text-blue-600 border border-blue-100', label: 'Asset' },
-        liability: { bg: 'bg-red-50 text-red-600 border border-red-100', label: 'Liability' },
-        equity: { bg: 'bg-purple-50 text-purple-600 border border-purple-100', label: 'Equity' },
-        revenue: { bg: 'bg-green-50 text-green-600 border border-green-100', label: 'Revenue' },
-        expense: { bg: 'bg-orange-50 text-orange-600 border border-orange-100', label: 'Expense' },
-      }} />
-    )},
+    {
+      key: 'code', header: 'Code', render: (a: any) => (
+        <Link to={`/accounting/accounts/${a.id}`} className="font-mono text-sm text-gray-500 hover:text-gray-700">{a.code}</Link>
+      )
+    },
+    {
+      key: 'name', header: 'Name', render: (a: any) => (
+        <Link to={`/accounting/accounts/${a.id}`} className="font-medium text-gray-900 hover:text-gray-700">{a.name}</Link>
+      )
+    },
+    {
+      key: 'type', header: 'Type', align: 'center' as const, render: (a: any) => (
+        <StatusBadge status={a.type} map={{
+          asset: { bg: 'bg-blue-50 text-blue-600 border border-blue-100', label: 'Asset' },
+          liability: { bg: 'bg-red-50 text-red-600 border border-red-100', label: 'Liability' },
+          equity: { bg: 'bg-purple-50 text-purple-600 border border-purple-100', label: 'Equity' },
+          revenue: { bg: 'bg-green-50 text-green-600 border border-green-100', label: 'Revenue' },
+          expense: { bg: 'bg-orange-50 text-orange-600 border border-orange-100', label: 'Expense' },
+        }} />
+      )
+    },
   ]
 
   return (

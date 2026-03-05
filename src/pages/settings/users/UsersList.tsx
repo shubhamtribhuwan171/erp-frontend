@@ -15,7 +15,7 @@ export default function UsersList() {
   useEffect(() => {
     const fetch = async () => {
       setLoading(true)
-      try { const res = await api.get('/settings/users'); setUsers(res.data.data || []) }
+      try { const res = await api.get('/settings/users'); setUsers(res.data.data?.users || []) }
       catch (e) { setError(e) }
       finally { setLoading(false) }
     }
@@ -28,16 +28,20 @@ export default function UsersList() {
   }
 
   const columns = [
-    { key: 'full_name', header: 'Name', render: (u: any) => (
-      <Link to={`/settings/users/${u.id}`} className="font-medium text-gray-900 hover:text-gray-700">{u.full_name || u.email}</Link>
-    )},
+    {
+      key: 'full_name', header: 'Name', render: (u: any) => (
+        <Link to={`/settings/users/${u.id}`} className="font-medium text-gray-900 hover:text-gray-700">{u.full_name || u.email}</Link>
+      )
+    },
     { key: 'email', header: 'Email', render: (u: any) => <span className="text-gray-600">{u.email}</span> },
     { key: 'role', header: 'Role', render: (u: any) => <span className="capitalize">{u.role || 'User'}</span> },
-    { key: 'is_active', header: 'Status', render: (u: any) => (
-      <span className={`px-2 py-1 rounded-md text-xs ${u.is_active ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-600'}`}>
-        {u.is_active ? 'Active' : 'Inactive'}
-      </span>
-    )},
+    {
+      key: 'is_active', header: 'Status', render: (u: any) => (
+        <span className={`px-2 py-1 rounded-md text-xs ${u.is_active ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-600'}`}>
+          {u.is_active ? 'Active' : 'Inactive'}
+        </span>
+      )
+    },
   ]
 
   return (

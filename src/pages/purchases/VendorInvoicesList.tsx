@@ -16,7 +16,7 @@ export default function VendorInvoicesList() {
       setLoading(true)
       try {
         const res = await purchaseVendorInvoices.list()
-        setInvoices(res.data.data || [])
+        setInvoices(res.data.data?.invoices || [])
       } catch (e) { setError(e) }
       finally { setLoading(false) }
     }

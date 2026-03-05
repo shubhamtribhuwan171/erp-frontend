@@ -16,7 +16,7 @@ export default function UnitsList() {
       setError(null)
       try {
         const res = await inventory.units.list()
-        setUnits(res.data.data || [])
+        setUnits(res.data.data?.units || [])
       } catch (e) {
         console.error(e)
         setError(e)
