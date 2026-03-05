@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Search, Eye, Edit, Truck, XCircle, ChevronDown } from 'lucide-react'
+import { Plus, Search, Eye, Edit, Truck, XCircle, ChevronDown, ShoppingCart } from 'lucide-react'
 import { sales } from '../../lib/api'
 import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
 import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
@@ -56,128 +56,148 @@ export default function OrdersList() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Sales Orders</h1>
-          <p className="text-[var(--text-secondary)]">Manage your sales orders</p>
-        </div>
-        <Link
-          to="/sales/orders/new"
-          className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <Plus size={18} />
-          New Order
-        </Link>
-      </div>
-
-      <div className="bg-white rounded-lg border border-[var(--border)] p-4">
-        <div className="flex items-center gap-4">
-          <div className="flex-1 relative">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--secondary)]" />
-            <input
-              type="text"
-              placeholder="Search orders..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-            />
+    <div className="min-h-screen bg-[#FAFAFA] p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center">
+              <ShoppingCart size={24} className="text-gray-300" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Sales Orders</h1>
+              <p className="text-sm text-gray-400">Manage your orders</p>
+            </div>
           </div>
-          <div className="relative">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="appearance-none bg-white pl-4 pr-10 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] hover:border-slate-300 transition"
-            >
-              <option value="">All Status</option>
-              <option value="draft">Draft</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="processing">Processing</option>
-              <option value="shipped">Shipped</option>
-              <option value="delivered">Delivered</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-            <ChevronDown
-              size={16}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--secondary)]"
-            />
+          <Link
+            to="/sales/orders/new"
+            className="px-5 py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
+          >
+            <Plus size={16} />
+            New Order
+          </Link>
+        </div>
+
+        {/* Filters */}
+        <div className="bg-white rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-4">
+            <div className="flex-1 relative">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
+              <input
+                type="text"
+                placeholder="Search orders..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+              />
+            </div>
+            <div className="relative">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="appearance-none bg-gray-50 pl-4 pr-11 py-2.5 rounded-xl border-0 focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all cursor-pointer"
+              >
+                <option value="">All Status</option>
+                <option value="draft">Draft</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <ChevronDown
+                size={16}
+                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-300"
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="bg-white rounded-lg border border-[var(--border-strong)] overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b border-[var(--border-strong)]">
-            <tr>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Order #</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Customer</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Date</th>
-              <th className="text-right px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Amount</th>
-              <th className="text-center px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Status</th>
-              <th className="text-right px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[var(--border-strong)]">
-            {loading ? (
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50/50 border-b border-gray-100">
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">
-                  Loading…
-                </td>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Order #</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Customer</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Amount</th>
+                <th className="text-center px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
               </tr>
-            ) : orders.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">
-                  No orders found.{' '}
-                  <Link to="/sales/orders/new" className="text-[var(--primary)] hover:underline">
-                    Create one
-                  </Link>
-                </td>
-              </tr>
-            ) : (
-              orders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-mono text-sm">{order.order_no}</td>
-                  <td className="px-4 py-3">{order.customer?.name || 'N/A'}</td>
-                  <td className="px-4 py-3 text-[var(--text-secondary)]">{formatDate(order.order_date)}</td>
-                  <td className="px-4 py-3 text-right font-medium">{formatCurrency(order.total_minor)}</td>
-                  <td className="px-4 py-3 text-center">
-                    <span
-                      className={`inline-block px-2 py-1 rounded-full text-xs capitalize ${statusColors[order.status] || 'bg-gray-100 text-gray-700'}`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Link to={`/sales/orders/${order.id}`} className="p-2 hover:bg-gray-100 rounded" title="View">
-                        <Eye size={16} className="text-[var(--secondary)]" />
-                      </Link>
-                      {order.status === 'draft' && (
-                        <Link
-                          to={`/sales/orders/${order.id}/edit`}
-                          className="p-2 hover:bg-gray-100 rounded"
-                          title="Edit"
-                        >
-                          <Edit size={16} className="text-[var(--secondary)]" />
-                        </Link>
-                      )}
-                      {order.status === 'confirmed' && (
-                        <button className="p-2 hover:bg-green-50 rounded" title="Mark Shipped">
-                          <Truck size={16} className="text-green-600" />
-                        </button>
-                      )}
-                      {order.status === 'draft' && (
-                        <button className="p-2 hover:bg-red-50 rounded" title="Cancel">
-                          <XCircle size={16} className="text-red-600" />
-                        </button>
-                      )}
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center">
+                    <div className="flex items-center justify-center gap-2 text-gray-300">
+                      <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-400 rounded-full animate-spin" />
+                      Loading...
                     </div>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : orders.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center">
+                    <ShoppingCart size={40} className="mx-auto mb-3 text-gray-200" />
+                    <p className="text-gray-400">No orders found.</p>
+                    <Link to="/sales/orders/new" className="text-sm text-gray-900 hover:underline mt-2 inline-block">
+                      Create your first order
+                    </Link>
+                  </td>
+                </tr>
+              ) : (
+                orders.map((order) => (
+                  <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <Link to={`/sales/orders/${order.id}`} className="font-mono text-sm text-gray-700 hover:text-gray-900">
+                        {order.order_no}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{order.customer?.name || 'N/A'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-400">{formatDate(order.order_date)}</td>
+                    <td className="px-6 py-4 text-sm text-right font-medium text-gray-900">{formatCurrency(order.total_minor)}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span
+                        className={`inline-block px-2.5 py-1 rounded-md text-xs font-medium capitalize ${statusColors[order.status] || 'bg-gray-100 text-gray-700'}`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Link to={`/sales/orders/${order.id}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="View">
+                          <Eye size={16} className="text-gray-400" />
+                        </Link>
+                        {order.status === 'draft' && (
+                          <Link
+                            to={`/sales/orders/${order.id}/edit`}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            title="Edit"
+                          >
+                            <Edit size={16} className="text-gray-400" />
+                          </Link>
+                        )}
+                        {order.status === 'confirmed' && (
+                          <button className="p-2 hover:bg-green-50 rounded-lg transition-colors" title="Mark Shipped">
+                            <Truck size={16} className="text-green-500" />
+                          </button>
+                        )}
+                        {order.status === 'draft' && (
+                          <button className="p-2 hover:bg-red-50 rounded-lg transition-colors" title="Cancel">
+                            <XCircle size={16} className="text-red-400" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   )
