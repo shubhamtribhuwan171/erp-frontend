@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, Edit, User, Mail, Phone, Calendar, Briefcase, MapPin, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
-import { hrEmployees } from '../../lib/hr-employees'
+import { hrEmployees } from '../../../lib/hr-employees'
 
 function formatDate(date?: string | null) {
   if (!date) return '-'
