@@ -3,6 +3,18 @@ import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, Edit, Mail, Phone, Landmark, MapPin } from 'lucide-react'
 import { purchases } from '../../lib/api'
 
+function formatAddress(addr: any): string {
+  if (!addr) return '-'
+  if (typeof addr === 'string') return addr
+  if (typeof addr === 'object') {
+    const parts = [addr.line1, addr.line2, addr.area, addr.city, addr.state, addr.pincode, addr.country]
+      .filter(Boolean)
+      .map(String)
+    return parts.length ? parts.join(', ') : JSON.stringify(addr)
+  }
+  return String(addr)
+}
+
 export default function VendorDetails() {
   const { id } = useParams()
   const [loading, setLoading] = useState(true)
@@ -95,7 +107,7 @@ export default function VendorDetails() {
                 <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
                   <MapPin size={14} /> Address
                 </div>
-                <div className="mt-1 whitespace-pre-wrap">{vendor.address ?? '-'}</div>
+                <div className="mt-1 whitespace-pre-wrap">{formatAddress(vendor.address)}</div>
               </div>
               <div className="border border-[var(--border)] rounded-lg p-3">
                 <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
