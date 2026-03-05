@@ -1,44 +1,55 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Search, Filter, MoreVertical, Edit, Trash2, Eye } from 'lucide-react';
-import { inventory } from '../../lib/api';
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Plus, Search, Filter, Edit, Trash2, Eye } from 'lucide-react'
+import { inventory } from '../../lib/api'
+import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
+import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
 
 export default function ItemsList() {
-  const [items, setItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [items, setItems] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<unknown | null>(null)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     const fetchItems = async () => {
+      setLoading(true)
+      setError(null)
       try {
-        const response = await inventory.items.list({ search });
-        setItems(response.data.data?.items || []);
-      } catch (error) {
-        console.error('Failed to fetch items');
+        const response = await inventory.items.list({ search })
+        setItems(response.data.data?.items || [])
+      } catch (e) {
+        console.error('Failed to fetch items', e)
+        setError(e)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchItems();
-  }, [search]);
+    }
+    fetchItems()
+  }, [search])
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount / 100);
-  };
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format((amount || 0) / 100)
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!confirm('Are you sure you want to delete this item?')) return
     try {
-      await inventory.items.delete(id);
-      setItems(items.filter(item => item.id !== id));
-    } catch (error) {
-      alert('Failed to delete item');
+      await inventory.items.delete(id)
+      setItems(items.filter((item) => item.id !== id))
+    } catch (e) {
+      setError(e)
+      alert(getApiErrorMessage(e))
     }
-  };
+  }
+
+  if (error) {
+    if (isModuleDisabledError(error)) return <ModuleDisabledState moduleName="Inventory" />
+    if (isForbidden(error)) return <ForbiddenState />
+    return <ErrorState message={getApiErrorMessage(error)} />
+  }
 
   return (
     <div className="space-y-4">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Items</h1>
@@ -53,7 +64,6 @@ export default function ItemsList() {
         </Link>
       </div>
 
-      {/* Filters */}
       <div className="bg-white rounded-lg border border-[var(--border)] p-4">
         <div className="flex items-center gap-4">
           <div className="flex-1 relative">
@@ -73,7 +83,6 @@ export default function ItemsList() {
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-lg border border-[var(--border-strong)] overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-[var(--border-strong)]">
@@ -90,12 +99,17 @@ export default function ItemsList() {
           <tbody className="divide-y divide-[var(--border-strong)]">
             {loading ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-[var(--secondary)]">Loading...</td>
+                <td colSpan={7} className="px-4 py-8 text-center text-[var(--secondary)]">
+                  Loading…
+                </td>
               </tr>
             ) : items.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-4 py-8 text-center text-[var(--secondary)]">
-                  No items found. <Link to="/inventory/items/new" className="text-[var(--primary)] hover:underline">Add one</Link>
+                  No items found.{' '}
+                  <Link to="/inventory/items/new" className="text-[var(--primary)] hover:underline">
+                    Add one
+                  </Link>
                 </td>
               </tr>
             ) : (
@@ -107,21 +121,21 @@ export default function ItemsList() {
                   <td className="px-4 py-3 text-right">{formatCurrency(item.standard_cost_minor || 0)}</td>
                   <td className="px-4 py-3 text-right">{formatCurrency(item.sale_price_minor || 0)}</td>
                   <td className="px-4 py-3 text-right">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      item.reorder_level ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                    }`}>
-                      {item.track_inventory ? (item.reorder_level || 0) : 'N/A'}
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${item.reorder_level ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}
+                    >
+                      {item.track_inventory ? item.reorder_level || 0 : 'N/A'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Link to={`/inventory/items/${item.id}`} className="p-1 hover:bg-gray-100 rounded">
+                      <Link to={`/inventory/items/${item.id}`} className="p-1 hover:bg-gray-100 rounded" title="View">
                         <Eye size={16} className="text-[var(--secondary)]" />
                       </Link>
-                      <Link to={`/inventory/items/${item.id}/edit`} className="p-1 hover:bg-gray-100 rounded">
+                      <Link to={`/inventory/items/${item.id}/edit`} className="p-1 hover:bg-gray-100 rounded" title="Edit">
                         <Edit size={16} className="text-[var(--secondary)]" />
                       </Link>
-                      <button onClick={() => handleDelete(item.id)} className="p-1 hover:bg-red-50 rounded">
+                      <button onClick={() => handleDelete(item.id)} className="p-1 hover:bg-red-50 rounded" title="Delete">
                         <Trash2 size={16} className="text-[var(--danger)]" />
                       </button>
                     </div>
@@ -133,5 +147,5 @@ export default function ItemsList() {
         </table>
       </div>
     </div>
-  );
+  )
 }
