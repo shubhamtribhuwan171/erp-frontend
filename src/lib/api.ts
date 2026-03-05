@@ -32,7 +32,7 @@ api.interceptors.response.use(
 
 // Auth
 export const auth = {
-  login: (email: string, password: string) => 
+  login: (email: string, password: string) =>
     api.post('/auth/login', { email, password }),
   register: (data: { email: string; password: string; companyName: string; fullName: string }) =>
     api.post('/auth/register', data),
@@ -78,7 +78,7 @@ export const sales = {
     get: (id: string) => api.get(`/sales/orders/${id}`),
     create: (data: any) => api.post('/sales/orders', data),
     update: (id: string, data: any) => api.put(`/sales/orders/${id}`, data),
-    updateStatus: (id: string, status: string) => 
+    updateStatus: (id: string, status: string) =>
       api.patch(`/sales/orders/${id}`, { status }),
   },
   customers: {
@@ -130,10 +130,12 @@ export const accounting = {
 export const hr = {
   employees: {
     list: () => api.get('/hr/employees'),
+    get: (id: string) => api.get(`/hr/employees/${id}`),
     create: (data: any) => api.post('/hr/employees', data),
   },
   departments: {
     list: () => api.get('/hr/departments'),
+    get: (id: string) => api.get(`/hr/departments/${id}`),
     create: (data: any) => api.post('/hr/departments', data),
   },
 };
@@ -141,11 +143,13 @@ export const hr = {
 // CRM
 export const crm = {
   leads: {
-    list: () => api.get('/crm/leads'),
+    list: (params?: any) => api.get('/crm/leads', { params }),
+    get: (id: string) => api.get(`/crm/leads/${id}`),
     create: (data: any) => api.post('/crm/leads', data),
   },
   contacts: {
-    list: () => api.get('/crm/contacts'),
+    list: (params?: any) => api.get('/crm/contacts', { params }),
+    get: (id: string) => api.get(`/crm/contacts/${id}`),
     create: (data: any) => api.post('/crm/contacts', data),
   },
 };

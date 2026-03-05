@@ -27,6 +27,7 @@ export const inventoryMovementsApi = {
     list: (params?: ListTransactionsParams) => api.get('/inventory/transactions', { params }),
   },
   transfers: {
+    list: () => api.get('/inventory/transfer'),
     create: (data: CreateTransferInput) => api.post('/inventory/transfer', data),
   },
   adjustments: {

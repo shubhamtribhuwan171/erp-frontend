@@ -5,5 +5,6 @@ import api from './api'
 
 export const purchaseReturns = {
   list: (params?: any) => api.get('/purchases/returns', { params }),
+  get: (id: string) => api.get(`/purchases/returns/${id}`),
   create: (data: any) => api.post('/purchases/returns', data),
 }

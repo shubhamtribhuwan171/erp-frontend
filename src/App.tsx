@@ -26,7 +26,6 @@ import NewQuotation from './pages/sales/NewQuotation';
 import QuotationDetails from './pages/sales/QuotationDetails';
 import InvoicesList from './pages/sales/InvoicesList';
 import InvoiceDetails from './pages/sales/InvoiceDetails';
-import QuotationDetails from './pages/sales/QuotationDetails';
 import ReturnDetails from './pages/sales/ReturnDetails';
 import ReceiptDetails from './pages/purchases/ReceiptDetails';
 import VendorInvoiceDetails from './pages/purchases/VendorInvoiceDetails';
@@ -34,7 +33,6 @@ import PurchaseReturnDetails from './pages/purchases/PurchaseReturnDetails';
 import ContactDetails from './pages/crm/ContactDetails';
 import ReturnsList from './pages/sales/ReturnsList';
 import NewReturn from './pages/sales/NewReturn';
-import ReturnDetails from './pages/sales/ReturnDetails';
 
 import PurchaseOrdersList from './pages/purchases/PurchaseOrdersList';
 import VendorsList from './pages/purchases/VendorsList';
@@ -45,10 +43,8 @@ import VendorDetails from './pages/purchases/VendorDetails';
 import VendorEdit from './pages/purchases/VendorEdit';
 import ReceiptsList from './pages/purchases/ReceiptsList';
 import NewReceipt from './pages/purchases/NewReceipt';
-import ReceiptDetails from './pages/purchases/ReceiptDetails';
 import VendorInvoicesList from './pages/purchases/VendorInvoicesList';
 import NewVendorInvoice from './pages/purchases/NewVendorInvoice';
-import VendorInvoiceDetails from './pages/purchases/VendorInvoiceDetails';
 import PurchaseReturnsList from './pages/purchases/PurchaseReturnsList';
 import NewPurchaseReturn from './pages/purchases/NewPurchaseReturn';
 
@@ -107,9 +103,9 @@ export default function App() {
           </Route>
 
           <Route path="/login" element={<Login />} />
-          
+
           <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          
+
           {/* Inventory */}
           <Route path="/inventory/items" element={<ProtectedRoute><ItemsList /></ProtectedRoute>} />
           <Route path="/inventory/items/new" element={<ProtectedRoute><NewItemForm /></ProtectedRoute>} />
@@ -123,7 +119,7 @@ export default function App() {
           <Route path="/inventory/transfers/new" element={<ProtectedRoute><TransferCreate /></ProtectedRoute>} />
           <Route path="/inventory/adjustments" element={<ProtectedRoute><AdjustmentsList /></ProtectedRoute>} />
           <Route path="/inventory/adjustments/new" element={<ProtectedRoute><AdjustmentCreate /></ProtectedRoute>} />
-          
+
           {/* Sales */}
           <Route path="/sales/customers" element={<ProtectedRoute><CustomersList /></ProtectedRoute>} />
           <Route path="/sales/customers/new" element={<ProtectedRoute><NewCustomerForm /></ProtectedRoute>} />
@@ -140,16 +136,10 @@ export default function App() {
           <Route path="/sales/quotations/:id" element={<ProtectedRoute><QuotationDetails /></ProtectedRoute>} />
           <Route path="/sales/invoices" element={<ProtectedRoute><InvoicesList /></ProtectedRoute>} />
           <Route path="/sales/invoices/:id" element={<ProtectedRoute><InvoiceDetails /></ProtectedRoute>} />
-          <Route path="/sales/quotations/:id" element={<ProtectedRoute><QuotationDetails /></ProtectedRoute>} />
-          <Route path="/sales/returns/:id" element={<ProtectedRoute><ReturnDetails /></ProtectedRoute>} />
-          <Route path="/purchases/receipts/:id" element={<ProtectedRoute><ReceiptDetails /></ProtectedRoute>} />
-          <Route path="/purchases/vendor-invoices/:id" element={<ProtectedRoute><VendorInvoiceDetails /></ProtectedRoute>} />
-          <Route path="/purchases/returns/:id" element={<ProtectedRoute><PurchaseReturnDetails /></ProtectedRoute>} />
-          <Route path="/crm/contacts/:id" element={<ProtectedRoute><ContactDetails /></ProtectedRoute>} />
           <Route path="/sales/returns" element={<ProtectedRoute><ReturnsList /></ProtectedRoute>} />
           <Route path="/sales/returns/new" element={<ProtectedRoute><NewReturn /></ProtectedRoute>} />
           <Route path="/sales/returns/:id" element={<ProtectedRoute><ReturnDetails /></ProtectedRoute>} />
-          
+
           {/* Purchases */}
           <Route path="/purchases/orders" element={<ProtectedRoute><PurchaseOrdersList /></ProtectedRoute>} />
           <Route path="/purchases/orders/new" element={<ProtectedRoute><NewPurchaseOrder /></ProtectedRoute>} />
@@ -168,14 +158,15 @@ export default function App() {
           <Route path="/purchases/vendor-invoices/:id" element={<ProtectedRoute><VendorInvoiceDetails /></ProtectedRoute>} />
           <Route path="/purchases/returns" element={<ProtectedRoute><PurchaseReturnsList /></ProtectedRoute>} />
           <Route path="/purchases/returns/new" element={<ProtectedRoute><NewPurchaseReturn /></ProtectedRoute>} />
-          
+          <Route path="/purchases/returns/:id" element={<ProtectedRoute><PurchaseReturnDetails /></ProtectedRoute>} />
+
           {/* Accounting */}
           <Route path="/accounting/accounts" element={<ProtectedRoute><AccountsList /></ProtectedRoute>} />
           <Route path="/accounting/accounts/:id" element={<ProtectedRoute><AccountDetails /></ProtectedRoute>} />
           <Route path="/accounting/journal" element={<ProtectedRoute><JournalList /></ProtectedRoute>} />
           <Route path="/accounting/journal/:id" element={<ProtectedRoute><JournalEntryDetails /></ProtectedRoute>} />
           <Route path="/accounting/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
-          
+
           {/* HR */}
           <Route path="/hr/employees" element={<ProtectedRoute><EmployeesList /></ProtectedRoute>} />
           <Route path="/hr/employees/new" element={<ProtectedRoute><EmployeeUpsertPage /></ProtectedRoute>} />
@@ -183,13 +174,14 @@ export default function App() {
           <Route path="/hr/employees/:id/edit" element={<ProtectedRoute><EmployeeUpsertPage /></ProtectedRoute>} />
           <Route path="/hr/departments" element={<ProtectedRoute><DepartmentsList /></ProtectedRoute>} />
           <Route path="/hr/attendance" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
-          
+
           {/* CRM */}
           <Route path="/crm/leads" element={<ProtectedRoute><LeadsList /></ProtectedRoute>} />
           <Route path="/crm/leads/new" element={<ProtectedRoute><NewLeadForm /></ProtectedRoute>} />
           <Route path="/crm/leads/:id" element={<ProtectedRoute><LeadDetails /></ProtectedRoute>} />
           <Route path="/crm/contacts" element={<ProtectedRoute><ContactsList /></ProtectedRoute>} />
-          
+          <Route path="/crm/contacts/:id" element={<ProtectedRoute><ContactDetails /></ProtectedRoute>} />
+
           {/* Settings */}
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="/settings/users" element={<ProtectedRoute><UsersList /></ProtectedRoute>} />
