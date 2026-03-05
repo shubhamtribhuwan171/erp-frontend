@@ -178,7 +178,9 @@ export default function UsersList() {
                 {filtered.map((u) => (
                   <tr key={u.id}>
                     <td className="p-3">
-                      <div className="font-medium">{u.full_name || u.email}</div>
+                      <Link to={`/settings/users/${u.id}`} className="font-medium hover:text-[var(--primary)]">
+                        {u.full_name || u.email}
+                      </Link>
                       <div className="text-[var(--secondary)]">{u.email}</div>
                     </td>
                     <td className="p-3 capitalize">{u.role || '-'}</td>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import { accounting } from '../../lib/api'
 import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
@@ -77,8 +78,16 @@ export default function JournalList() {
             ) : (
               entries.map((entry) => (
                 <tr key={entry.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-mono text-sm">{entry.entry_no}</td>
-                  <td className="px-4 py-3">{new Date(entry.entry_date).toLocaleDateString('en-IN')}</td>
+                  <td className="px-4 py-3">
+                    <Link to={`/accounting/journal/${entry.id}`} className="font-mono text-sm hover:text-[var(--primary)]">
+                      {entry.entry_no}
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link to={`/accounting/journal/${entry.id}`} className="hover:text-[var(--primary)]">
+                      {new Date(entry.entry_date).toLocaleDateString('en-IN')}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3">{entry.memo || '-'}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`px-2 py-1 rounded text-xs ${statusColors[entry.status] || 'bg-gray-100'}`}>

@@ -112,6 +112,7 @@ export const purchases = {
 export const accounting = {
   accounts: {
     list: () => api.get('/accounting/accounts'),
+    get: (id: string) => api.get(`/accounting/accounts/${id}`),
     create: (data: any) => api.post('/accounting/accounts', data),
   },
   journal: {

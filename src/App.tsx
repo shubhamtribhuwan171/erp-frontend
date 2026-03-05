@@ -50,7 +50,9 @@ import ItemDetails from './pages/inventory/ItemDetails';
 import ItemEdit from './pages/inventory/ItemEdit';
 
 import AccountsList from './pages/accounting/AccountsList';
+import AccountDetails from './pages/accounting/AccountDetails';
 import JournalList from './pages/accounting/JournalList';
+import JournalEntryDetails from './pages/accounting/JournalEntryDetails';
 import ReportsPage from './pages/accounting/ReportsPage';
 import EmployeesList from './pages/hr/EmployeesList';
 import DepartmentsList from './pages/hr/DepartmentsList';
@@ -65,6 +67,7 @@ import LeadDetails from './pages/crm/LeadDetails';
 
 import SettingsPage from './pages/settings/SettingsPage';
 import UsersList from './pages/settings/users/UsersList';
+import UserDetails from './pages/settings/users/UserDetails';
 import UserEditPage from './pages/settings/users/UserEditPage';
 import IndustryProfilesPage from './pages/settings/IndustryProfilesPage';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -156,7 +159,9 @@ export default function App() {
           
           {/* Accounting */}
           <Route path="/accounting/accounts" element={<ProtectedRoute><AccountsList /></ProtectedRoute>} />
+          <Route path="/accounting/accounts/:id" element={<ProtectedRoute><AccountDetails /></ProtectedRoute>} />
           <Route path="/accounting/journal" element={<ProtectedRoute><JournalList /></ProtectedRoute>} />
+          <Route path="/accounting/journal/:id" element={<ProtectedRoute><JournalEntryDetails /></ProtectedRoute>} />
           <Route path="/accounting/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
           
           {/* HR */}
@@ -176,7 +181,8 @@ export default function App() {
           {/* Settings */}
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="/settings/users" element={<ProtectedRoute><UsersList /></ProtectedRoute>} />
-          <Route path="/settings/users/:id" element={<ProtectedRoute><UserEditPage /></ProtectedRoute>} />
+          <Route path="/settings/users/:id" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
+          <Route path="/settings/users/:id/edit" element={<ProtectedRoute><UserEditPage /></ProtectedRoute>} />
           <Route path="/settings/industry-profiles" element={<ProtectedRoute><IndustryProfilesPage /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>

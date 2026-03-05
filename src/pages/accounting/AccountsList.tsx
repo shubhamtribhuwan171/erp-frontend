@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Plus, Wallet, TrendingUp, TrendingDown, Building, DollarSign } from 'lucide-react'
 import { accounting } from '../../lib/api'
 import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
@@ -155,8 +156,16 @@ export default function AccountsList() {
               <tbody className="divide-y">
                 {items.map((acc: any) => (
                   <tr key={acc.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-sm">{acc.code}</td>
-                    <td className="px-4 py-3">{acc.name}</td>
+                    <td className="px-4 py-3">
+                      <Link to={`/accounting/accounts/${acc.id}`} className="font-mono text-sm hover:text-[var(--primary)]">
+                        {acc.code}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link to={`/accounting/accounts/${acc.id}`} className="hover:text-[var(--primary)]">
+                        {acc.name}
+                      </Link>
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-1 rounded text-xs capitalize ${typeColors[type]}`}>
                         {type}
