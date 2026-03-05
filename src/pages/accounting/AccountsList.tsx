@@ -1,71 +1,33 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Wallet, TrendingUp, TrendingDown, Building, DollarSign } from 'lucide-react'
+import { Plus, Search, Wallet } from 'lucide-react'
 import { accounting } from '../../lib/api'
 import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
 import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
-
-const typeColors: Record<string, string> = {
-  asset: 'bg-blue-100 text-blue-700',
-  liability: 'bg-red-100 text-red-700',
-  equity: 'bg-purple-100 text-purple-700',
-  revenue: 'bg-green-100 text-green-700',
-  expense: 'bg-orange-100 text-orange-700',
-}
-
-const typeIcons: Record<string, React.ElementType> = {
-  asset: Wallet,
-  liability: Building,
-  equity: DollarSign,
-  revenue: TrendingUp,
-  expense: TrendingDown,
-}
+import { DataTable, PageHeader, SearchInput, StatusBadge } from '../../components/ui'
 
 export default function AccountsList() {
   const [accounts, setAccounts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<unknown | null>(null)
-  const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ name: '', code: '', type: 'expense' })
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
+    const fetchAccounts = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await accounting.accounts.list()
+        setAccounts(res.data.data || [])
+      } catch (e) {
+        console.error(e)
+        setError(e)
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchAccounts()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const fetchAccounts = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await accounting.accounts.list()
-      setAccounts(res.data.data?.accounts || [])
-    } catch (e) {
-      setError(e)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      await accounting.accounts.create(form)
-      setForm({ name: '', code: '', type: 'expense' })
-      setShowForm(false)
-      fetchAccounts()
-    } catch (e) {
-      setError(e)
-      alert(getApiErrorMessage(e))
-    }
-  }
-
-  const grouped = useMemo(() => {
-    return accounts.reduce((acc, a) => {
-      if (!acc[a.type]) acc[a.type] = []
-      acc[a.type].push(a)
-      return acc
-    }, {} as Record<string, any[]>)
-  }, [accounts])
 
   if (error) {
     if (isModuleDisabledError(error)) return <ModuleDisabledState moduleName="Accounting" />
@@ -73,111 +35,33 @@ export default function AccountsList() {
     return <ErrorState message={getApiErrorMessage(error)} />
   }
 
+  const columns = [
+    { key: 'code', header: 'Code', render: (a: any) => (
+      <Link to={`/accounting/accounts/${a.id}`} className="font-mono text-sm text-gray-500 hover:text-gray-700">{a.code}</Link>
+    )},
+    { key: 'name', header: 'Name', render: (a: any) => (
+      <Link to={`/accounting/accounts/${a.id}`} className="font-medium text-gray-900 hover:text-gray-700">{a.name}</Link>
+    )},
+    { key: 'type', header: 'Type', align: 'center' as const, render: (a: any) => (
+      <StatusBadge status={a.type} map={{
+        asset: { bg: 'bg-blue-50 text-blue-600 border border-blue-100', label: 'Asset' },
+        liability: { bg: 'bg-red-50 text-red-600 border border-red-100', label: 'Liability' },
+        equity: { bg: 'bg-purple-50 text-purple-600 border border-purple-100', label: 'Equity' },
+        revenue: { bg: 'bg-green-50 text-green-600 border border-green-100', label: 'Revenue' },
+        expense: { bg: 'bg-orange-50 text-orange-600 border border-orange-100', label: 'Expense' },
+      }} />
+    )},
+  ]
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Chart of Accounts</h1>
-          <p className="text-[var(--text-secondary)]">Manage accounts</p>
+    <div className="min-h-screen bg-[#FAFAFA] p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <PageHeader icon={Wallet} title="Accounts" subtitle="Manage chart of accounts" />
+        <div className="bg-white rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <SearchInput value={search} onChange={setSearch} placeholder="Search accounts..." />
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <Plus size={18} /> Add Account
-        </button>
+        <DataTable columns={columns} data={accounts} loading={loading} emptyTitle="No accounts found" />
       </div>
-
-      {showForm && (
-        <div className="bg-white rounded-lg border p-4">
-          <form onSubmit={handleSubmit} className="flex gap-4 items-end">
-            <div>
-              <label className="block text-sm mb-1">Code</label>
-              <input
-                type="text"
-                value={form.code}
-                onChange={(e) => setForm({ ...form, code: e.target.value })}
-                className="px-3 py-2 border rounded-lg w-32"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm mb-1">Name</label>
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="px-3 py-2 border rounded-lg w-64"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm mb-1">Type</label>
-              <select
-                value={form.type}
-                onChange={(e) => setForm({ ...form, type: e.target.value })}
-                className="px-3 py-2 border rounded-lg"
-              >
-                <option value="asset">Asset</option>
-                <option value="liability">Liability</option>
-                <option value="equity">Equity</option>
-                <option value="revenue">Revenue</option>
-                <option value="expense">Expense</option>
-              </select>
-            </div>
-            <button type="submit" className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg">
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="px-4 py-2 border rounded-lg"
-            >
-              Cancel
-            </button>
-          </form>
-        </div>
-      )}
-
-      {loading ? (
-        <div className="text-[var(--text-secondary)]">Loading…</div>
-      ) : (
-        Object.entries(grouped as Record<string, any[]>).map(([type, items]) => (
-          <div key={type} className="bg-white rounded-lg border overflow-hidden">
-            <div className="bg-gray-50 px-4 py-2 border-b flex items-center gap-2">
-              {(() => {
-                const Icon = typeIcons[type] || DollarSign
-                return <Icon size={18} className="text-[var(--secondary)]" />
-              })()}
-              <span className="font-medium capitalize">{type}</span>
-              <span className="text-sm text-[var(--secondary)]">({items.length})</span>
-            </div>
-            <table className="w-full">
-              <tbody className="divide-y">
-                {items.map((acc: any) => (
-                  <tr key={acc.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      <Link to={`/accounting/accounts/${acc.id}`} className="font-mono text-sm hover:text-[var(--primary)]">
-                        {acc.code}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Link to={`/accounting/accounts/${acc.id}`} className="hover:text-[var(--primary)]">
-                        {acc.name}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded text-xs capitalize ${typeColors[type]}`}>
-                        {type}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))
-      )}
     </div>
   )
 }

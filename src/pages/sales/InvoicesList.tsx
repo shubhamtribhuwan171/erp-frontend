@@ -1,18 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronDown, Eye, Search } from 'lucide-react'
+import { Plus, Search, Receipt } from 'lucide-react'
 import { salesDocs } from '../../lib/sales-docs'
 import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
 import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
-
-const statusColors: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-700',
-  issued: 'bg-blue-100 text-blue-700',
-  partially_paid: 'bg-yellow-100 text-yellow-700',
-  paid: 'bg-green-100 text-green-700',
-  overdue: 'bg-red-100 text-red-700',
-  cancelled: 'bg-red-100 text-red-700',
-}
+import { DataTable, PageHeader, SearchInput, StatusBadge } from '../../components/ui'
 
 export default function InvoicesList() {
   const [invoices, setInvoices] = useState<any[]>([])
@@ -39,7 +31,6 @@ export default function InvoicesList() {
         setLoading(false)
       }
     }
-
     fetchInvoices()
   }, [statusFilter, search])
 
@@ -55,97 +46,99 @@ export default function InvoicesList() {
     return <ErrorState message={getApiErrorMessage(error)} />
   }
 
+  const columns = [
+    {
+      key: 'invoice_no',
+      header: 'Invoice #',
+      render: (inv: any) => (
+        <Link to={`/sales/invoices/${inv.id}`} className="font-mono text-sm text-gray-700 hover:text-gray-900">
+          {inv.invoice_no}
+        </Link>
+      ),
+    },
+    {
+      key: 'customer',
+      header: 'Customer',
+      render: (inv: any) => inv.customer?.name || 'N/A',
+    },
+    {
+      key: 'invoice_date',
+      header: 'Date',
+      render: (inv: any) => formatDate(inv.invoice_date),
+    },
+    {
+      key: 'due_date',
+      header: 'Due Date',
+      render: (inv: any) => formatDate(inv.due_date),
+    },
+    {
+      key: 'total_minor',
+      header: 'Amount',
+      align: 'right' as const,
+      render: (inv: any) => formatCurrency(inv.total_minor),
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      align: 'center' as const,
+      render: (inv: any) => (
+        <StatusBadge
+          status={inv.status}
+          map={{
+            draft: { bg: 'bg-gray-100 text-gray-700', label: 'Draft' },
+            issued: { bg: 'bg-blue-100 text-blue-700', label: 'Issued' },
+            partially_paid: { bg: 'bg-yellow-100 text-yellow-700', label: 'Partially Paid' },
+            paid: { bg: 'bg-green-100 text-green-700', label: 'Paid' },
+            overdue: { bg: 'bg-red-100 text-red-700', label: 'Overdue' },
+            cancelled: { bg: 'bg-red-100 text-red-700', label: 'Cancelled' },
+          }}
+        />
+      ),
+    },
+  ]
+
+  const actions = [
+    { icon: 'view' as const, path: (inv: any) => `/sales/invoices/${inv.id}` },
+  ]
+
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Invoices</h1>
-        <p className="text-[var(--text-secondary)]">View issued invoices</p>
-      </div>
+    <div className="min-h-screen bg-[#FAFAFA] p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        <PageHeader
+          icon={Receipt}
+          title="Invoices"
+          subtitle="Manage your invoices"
+        />
 
-      <div className="bg-white rounded-lg border border-[var(--border)] p-4">
-        <div className="flex items-center gap-4">
-          <div className="flex-1 relative">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--secondary)]" />
-            <input
-              type="text"
-              placeholder="Search invoices..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-            />
-          </div>
-
-          <div className="relative">
+        <div className="bg-white rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <SearchInput value={search} onChange={setSearch} placeholder="Search invoices..." />
+            </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="appearance-none bg-white pl-4 pr-10 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] hover:border-slate-300 transition"
+              className="appearance-none bg-gray-50 pl-4 pr-11 py-2.5 rounded-xl border-0 focus:ring-2 focus:ring-gray-200 focus:bg-white cursor-pointer"
             >
               <option value="">All Status</option>
               <option value="draft">Draft</option>
               <option value="issued">Issued</option>
-              <option value="partially_paid">Partially paid</option>
+              <option value="partially_paid">Partially Paid</option>
               <option value="paid">Paid</option>
               <option value="overdue">Overdue</option>
-              <option value="cancelled">Cancelled</option>
             </select>
-            <ChevronDown
-              size={16}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--secondary)]"
-            />
           </div>
         </div>
-      </div>
 
-      <div className="bg-white rounded-lg border border-[var(--border-strong)] overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b border-[var(--border-strong)]">
-            <tr>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Invoice #</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Customer</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Date</th>
-              <th className="text-right px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Total</th>
-              <th className="text-center px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Status</th>
-              <th className="text-right px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[var(--border-strong)]">
-            {loading ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">
-                  Loading…
-                </td>
-              </tr>
-            ) : invoices.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">No invoices found.</td>
-              </tr>
-            ) : (
-              invoices.map((inv) => (
-                <tr key={inv.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-mono text-sm">{inv.invoice_no || inv.number || inv.id}</td>
-                  <td className="px-4 py-3">{inv.customer?.name || inv.customer_name || 'N/A'}</td>
-                  <td className="px-4 py-3 text-[var(--text-secondary)]">{inv.invoice_date ? formatDate(inv.invoice_date) : '—'}</td>
-                  <td className="px-4 py-3 text-right font-medium">{formatCurrency(inv.total_minor ?? inv.total_amount_minor ?? 0)}</td>
-                  <td className="px-4 py-3 text-center">
-                    <span
-                      className={`inline-block px-2 py-1 rounded-full text-xs capitalize ${statusColors[inv.status] || 'bg-gray-100 text-gray-700'}`}
-                    >
-                      {inv.status || 'unknown'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Link to={`/sales/invoices/${inv.id}`} className="p-2 hover:bg-gray-100 rounded" title="View">
-                        <Eye size={16} className="text-[var(--secondary)]" />
-                      </Link>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+        <DataTable
+          columns={columns}
+          data={invoices}
+          loading={loading}
+          emptyTitle="No invoices found"
+          actions={actions}
+        />
+
       </div>
     </div>
   )
