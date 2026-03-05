@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { LucideIcon, ArrowLeft } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 interface PageHeaderProps {
   icon?: LucideIcon
@@ -14,8 +15,8 @@ export default function PageHeader({ icon: Icon, title, subtitle, backPath, acti
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
         {backPath && (
-          <Link 
-            to={backPath} 
+          <Link
+            to={backPath}
             className="p-2.5 hover:bg-white hover:shadow-sm rounded-xl transition-all duration-200"
           >
             <ArrowLeft size={20} className="text-gray-400" />

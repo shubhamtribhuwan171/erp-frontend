@@ -1,4 +1,5 @@
-import { LucideIcon } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import type { LucideIcon } from 'lucide-react'
 
 interface EmptyStateProps {
   icon?: LucideIcon
@@ -9,13 +10,13 @@ interface EmptyStateProps {
   onAction?: () => void
 }
 
-export default function EmptyState({ 
-  icon: Icon, 
-  title, 
-  description, 
-  actionLabel, 
+export default function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  actionLabel,
   actionPath,
-  onAction 
+  onAction
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4">
@@ -29,14 +30,14 @@ export default function EmptyState({
       {actionLabel && (
         <div className="mt-4">
           {actionPath ? (
-            <Link 
-              to={actionPath} 
+            <Link
+              to={actionPath}
               className="text-sm text-gray-900 hover:underline"
             >
               {actionLabel}
             </Link>
           ) : onAction ? (
-            <button 
+            <button
               onClick={onAction}
               className="text-sm text-gray-900 hover:underline"
             >
