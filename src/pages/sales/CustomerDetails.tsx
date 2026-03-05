@@ -73,7 +73,7 @@ export default function CustomerDetails() {
             <p className="text-[var(--text-secondary)]">Customer details</p>
           </div>
         </div>
-        <div className-lg border border-[="bg-white roundedvar(--border)] p-8 text-center text-[var(--secondary)]">
+        <div className="bg-white rounded-lg border border-[var(--border)] p-8 text-center text-[var(--secondary)]">
           Loading...
         </div>
       </div>
@@ -346,4 +346,3 @@ export default function CustomerDetails() {
     </div>
   )
 }
-
