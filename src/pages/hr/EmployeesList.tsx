@@ -58,7 +58,11 @@ export default function EmployeesList() {
           </div>
         ) : (
           employees.map((emp) => (
-            <div key={emp.id} className="bg-white rounded-lg border p-4">
+            <Link
+              key={emp.id}
+              to={`/hr/employees/${emp.id}`}
+              className="bg-white rounded-lg border p-4 hover:shadow-sm transition-shadow"
+            >
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-semibold">
                   {emp.name?.charAt(0) || 'E'}
@@ -84,7 +88,7 @@ export default function EmployeesList() {
                   </div>
                 )}
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>

@@ -47,6 +47,9 @@ const menuItems: MenuItem[] = [
       { label: 'Categories', path: '/inventory/categories' },
       { label: 'Units', path: '/inventory/units' },
       { label: 'Warehouses', path: '/inventory/warehouses' },
+      { label: 'Transactions', path: '/inventory/transactions' },
+      { label: 'Transfers', path: '/inventory/transfers' },
+      { label: 'Adjustments', path: '/inventory/adjustments' },
     ],
   },
   {
@@ -57,6 +60,9 @@ const menuItems: MenuItem[] = [
     items: [
       { label: 'Orders', path: '/sales/orders' },
       { label: 'Customers', path: '/sales/customers' },
+      { label: 'Quotations', path: '/sales/quotations' },
+      { label: 'Invoices', path: '/sales/invoices' },
+      { label: 'Returns', path: '/sales/returns' },
     ],
   },
   {
@@ -67,6 +73,9 @@ const menuItems: MenuItem[] = [
     items: [
       { label: 'Orders', path: '/purchases/orders' },
       { label: 'Vendors', path: '/purchases/vendors' },
+      { label: 'Receipts (GRN)', path: '/purchases/receipts' },
+      { label: 'Vendor Invoices', path: '/purchases/vendor-invoices' },
+      { label: 'Returns', path: '/purchases/returns' },
     ],
   },
   {
@@ -88,6 +97,7 @@ const menuItems: MenuItem[] = [
     items: [
       { label: 'Employees', path: '/hr/employees' },
       { label: 'Departments', path: '/hr/departments' },
+      { label: 'Attendance', path: '/hr/attendance' },
     ],
   },
   {
@@ -100,7 +110,16 @@ const menuItems: MenuItem[] = [
       { label: 'Contacts', path: '/crm/contacts' },
     ],
   },
-  { icon: Settings, label: 'Settings', path: '/settings' },
+  {
+    icon: Settings,
+    label: 'Settings',
+    path: '/settings',
+    items: [
+      { label: 'Company', path: '/settings' },
+      { label: 'Users', path: '/settings/users' },
+      { label: 'Industry Profiles', path: '/settings/industry-profiles' },
+    ],
+  },
 ]
 
 export default function Layout({ children }: LayoutProps) {
