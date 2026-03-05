@@ -250,8 +250,8 @@ export default function CustomerDetails() {
                       <div className="text-sm font-mono text-gray-700">{inv.order_no}</div>
                       <div className="text-xs text-gray-400">{formatDate(inv.order_date)}</div>
                     </div>
-                    text-right">
-                     <div className=" <div className="text-sm font-medium text-gray-900">{formatCurrency(inv.total_minor)}</div>
+                    <div className="text-right">
+                      <div className="text-sm font-medium text-gray-900">{formatCurrency(inv.total_minor)}</div>
                       <StatusBadge status={inv.status} />
                     </div>
                   </Link>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Search, Edit, Trash2, Eye, Phone, Mail } from 'lucide-react'
+import { Plus, Search, Edit, Trash2, Eye, Phone, Mail, Users } from 'lucide-react'
 import { sales } from '../../lib/api'
 import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
 import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
@@ -46,98 +46,127 @@ export default function CustomersList() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Customers</h1>
-          <p className="text-[var(--text-secondary)]">Manage your customers</p>
+    <div className="min-h-screen bg-[#FAFAFA] p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center">
+              <Users size={24} className="text-gray-300" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Customers</h1>
+              <p className="text-sm text-gray-400">Manage your customers</p>
+            </div>
+          </div>
+          <Link
+            to="/sales/customers/new"
+            className="px-5 py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
+          >
+            <Plus size={16} />
+            Add Customer
+          </Link>
         </div>
-        <Link
-          to="/sales/customers/new"
-          className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <Plus size={18} />
-          Add Customer
-        </Link>
-      </div>
 
-      <div className="bg-white rounded-lg border border-[var(--border)] p-4">
-        <div className="flex items-center gap-4">
-          <div className="flex-1 relative">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--secondary)]" />
+        {/* Search */}
+        <div className="bg-white rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <div className="relative">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
             <input
               type="text"
               placeholder="Search customers..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+              className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
             />
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {loading ? (
-          <div className="col-span-full text-center py-8 text-[var(--secondary)]">Loading…</div>
-        ) : customers.length === 0 ? (
-          <div className="col-span-full text-center py-8 text-[var(--secondary)]">
-            No customers found.{' '}
-            <Link to="/sales/customers/new" className="text-[var(--primary)] hover:underline">
-              Add one
-            </Link>
-          </div>
-        ) : (
-          customers.map((customer) => (
-            <div
-              key={customer.id}
-              className="bg-white rounded-lg border border-[var(--border)] p-4 hover:shadow-sm transition"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-[var(--primary)] font-semibold">
-                    {customer.name?.charAt(0)?.toUpperCase() || 'C'}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{customer.name}</h3>
-                    <p className="text-sm text-[var(--text-secondary)]">{customer.code}</p>
-                  </div>
-                </div>
-                <span
-                  className={`px-2 py-1 rounded-full text-xs ${customer.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}
-                >
-                  {customer.status}
-                </span>
-              </div>
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50/50 border-b border-gray-100">
+              <tr>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Customer</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Code</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Contact</th>
+                <th className="text-center px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {loading ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center">
+                    <div className="flex items-center justify-center gap-2 text-gray-300">
+                      <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-400 rounded-full animate-spin" />
+                      Loading...
+                    </div>
+                  </td>
+                </tr>
+              ) : customers.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center">
+                    <Users size={40} className="mx-auto mb-3 text-gray-200" />
+                    <p className="text-gray-400">No customers found.</p>
+                    <Link to="/sales/customers/new" className="text-sm text-gray-900 hover:underline mt-2 inline-block">
+                      Add your first customer
+                    </Link>
+                  </td>
+                </tr>
+              ) : (
+                customers.map((customer) => (
+                  <tr key={customer.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <Link to={`/sales/customers/${customer.id}`} className="font-medium text-gray-900 hover:text-gray-700">
+                        {customer.name}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-400 font-mono">{customer.code || '-'}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        {customer.email && (
+                          <a href={`mailto:${customer.email}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                            <Mail size={14} className="text-gray-400" />
+                          </a>
+                        )}
+                        {customer.phone && (
+                          <a href={`tel:${customer.phone}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                            <Phone size={14} className="text-gray-400" />
+                          </a>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`inline-block px-2.5 py-1 rounded-md text-xs font-medium ${
+                        String(customer.status ?? 'active').toLowerCase() === 'active' 
+                          ? 'bg-green-50 text-green-600' 
+                          : 'bg-gray-100 text-gray-600'
+                      }`}>
+                        {customer.status ?? 'active'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Link to={`/sales/customers/${customer.id}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="View">
+                          <Eye size={16} className="text-gray-400" />
+                        </Link>
+                        <Link to={`/sales/customers/${customer.id}/edit`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
+                          <Edit size={16} className="text-gray-400" />
+                        </Link>
+                        <button onClick={() => handleDelete(customer.id)} className="p-2 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                          <Trash2 size={16} className="text-red-400" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
-              <div className="mt-4 space-y-2 text-sm text-[var(--text-secondary)]">
-                {customer.email && (
-                  <div className="flex items-center gap-2">
-                    <Mail size={14} />
-                    <span>{customer.email}</span>
-                  </div>
-                )}
-                {customer.phone && (
-                  <div className="flex items-center gap-2">
-                    <Phone size={14} />
-                    <span>{customer.phone}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-[var(--border)] flex items-center justify-end gap-2">
-                <Link to={`/sales/customers/${customer.id}`} className="p-2 hover:bg-gray-100 rounded" title="View">
-                  <Eye size={16} className="text-[var(--secondary)]" />
-                </Link>
-                <Link to={`/sales/customers/${customer.id}/edit`} className="p-2 hover:bg-gray-100 rounded" title="Edit">
-                  <Edit size={16} className="text-[var(--secondary)]" />
-                </Link>
-                <button onClick={() => handleDelete(customer.id)} className="p-2 hover:bg-red-50 rounded" title="Delete">
-                  <Trash2 size={16} className="text-[var(--danger)]" />
-                </button>
-              </div>
-            </div>
-          ))
-        )}
       </div>
     </div>
   )

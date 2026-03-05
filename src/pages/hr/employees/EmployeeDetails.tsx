@@ -252,9 +252,9 @@ export default function EmployeeDetails() {
               </tbody>
             </table>
           </div>
-       attendance.length ===  )}
+        )}
 
-        {0 && (
+        {attendance.length === 0 && (
           <div className="bg-white rounded-2xl p-12 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
             <Clock size={40} className="mx-auto mb-3 text-gray-200" />
             <p className="text-gray-400">No attendance records yet</p>

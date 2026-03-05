@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, Mail, Phone, Building, Calendar, Shield } from 'lucide-react'
-import api from '../../lib/api'
+import api from '../../../lib/api'
 
 function formatDate(date?: string | null) {
   if (!date) return '-'

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Search, Filter, Edit, Trash2, Eye } from 'lucide-react'
+import { Plus, Search, Edit, Trash2, Eye, Package, AlertTriangle } from 'lucide-react'
 import { inventory } from '../../lib/api'
 import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
 import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
@@ -49,102 +49,125 @@ export default function ItemsList() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Items</h1>
-          <p className="text-[var(--text-secondary)]">Manage your inventory items</p>
+    <div className="min-h-screen bg-[#FAFAFA] p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center">
+              <Package size={24} className="text-gray-300" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Items</h1>
+              <p className="text-sm text-gray-400">Manage your inventory</p>
+            </div>
+          </div>
+          <Link
+            to="/inventory/items/new"
+            className="px-5 py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
+          >
+            <Plus size={16} />
+            Add Item
+          </Link>
         </div>
-        <Link
-          to="/inventory/items/new"
-          className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <Plus size={18} />
-          Add Item
-        </Link>
-      </div>
 
-      <div className="bg-white rounded-lg border border-[var(--border)] p-4">
-        <div className="flex items-center gap-4">
-          <div className="flex-1 relative">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--secondary)]" />
+        {/* Search */}
+        <div className="bg-white rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <div className="relative">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
             <input
               type="text"
               placeholder="Search items..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+              className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 border border-[var(--border)] rounded-lg hover:bg-gray-50">
-            <Filter size={18} />
-            Filters
-          </button>
         </div>
-      </div>
 
-      <div className="bg-white rounded-lg border border-[var(--border-strong)] overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b border-[var(--border-strong)]">
-            <tr>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">SKU</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Name</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Category</th>
-              <th className="text-right px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Cost</th>
-              <th className="text-right px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Price</th>
-              <th className="text-right px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Stock</th>
-              <th className="text-right px-4 py-3 text-sm font-medium text-[var(--text-secondary)]">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[var(--border-strong)]">
-            {loading ? (
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50/50 border-b border-gray-100">
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-[var(--secondary)]">
-                  Loading…
-                </td>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">SKU</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Category</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Cost</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Price</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Stock</th>
+                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
               </tr>
-            ) : items.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-[var(--secondary)]">
-                  No items found.{' '}
-                  <Link to="/inventory/items/new" className="text-[var(--primary)] hover:underline">
-                    Add one
-                  </Link>
-                </td>
-              </tr>
-            ) : (
-              items.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-mono text-sm">{item.sku}</td>
-                  <td className="px-4 py-3 font-medium">{item.name}</td>
-                  <td className="px-4 py-3 text-[var(--text-secondary)]">{item.category?.name || '-'}</td>
-                  <td className="px-4 py-3 text-right">{formatCurrency(item.standard_cost_minor || 0)}</td>
-                  <td className="px-4 py-3 text-right">{formatCurrency(item.sale_price_minor || 0)}</td>
-                  <td className="px-4 py-3 text-right">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${item.reorder_level ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}
-                    >
-                      {item.track_inventory ? item.reorder_level || 0 : 'N/A'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Link to={`/inventory/items/${item.id}`} className="p-1 hover:bg-gray-100 rounded" title="View">
-                        <Eye size={16} className="text-[var(--secondary)]" />
-                      </Link>
-                      <Link to={`/inventory/items/${item.id}/edit`} className="p-1 hover:bg-gray-100 rounded" title="Edit">
-                        <Edit size={16} className="text-[var(--secondary)]" />
-                      </Link>
-                      <button onClick={() => handleDelete(item.id)} className="p-1 hover:bg-red-50 rounded" title="Delete">
-                        <Trash2 size={16} className="text-[var(--danger)]" />
-                      </button>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center">
+                    <div className="flex items-center justify-center gap-2 text-gray-300">
+                      <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-400 rounded-full animate-spin" />
+                      Loading...
                     </div>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : items.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center">
+                    <Package size={40} className="mx-auto mb-3 text-gray-200" />
+                    <p className="text-gray-400">No items found.</p>
+                    <Link to="/inventory/items/new" className="text-sm text-gray-900 hover:underline mt-2 inline-block">
+                      Add your first item
+                    </Link>
+                  </td>
+                </tr>
+              ) : (
+                items.map((item) => {
+                  const stock = Number(item.stock?.[0]?.qty_on_hand ?? item.on_hand ?? 0) || 0
+                  const needsReorder = stock <= (item.reorder_level || 0)
+                  return (
+                    <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
+                      <td className="px-6 py-4">
+                        <span className="font-mono text-sm text-gray-500">{item.sku || '-'}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Link to={`/inventory/items/${item.id}`} className="font-medium text-gray-900 hover:text-gray-700">
+                          {item.name}
+                        </Link>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">{item.category?.name || '-'}</td>
+                      <td className="px-6 py-4 text-sm text-right text-gray-500">{formatCurrency(item.standard_cost_minor)}</td>
+                      <td className="px-6 py-4 text-sm text-right text-gray-500">{formatCurrency(item.sale_price_minor)}</td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          {needsReorder && item.track_inventory && (
+                            <AlertTriangle size={14} className="text-amber-500" />
+                          )}
+                          <span className={`font-medium ${needsReorder ? 'text-amber-600' : 'text-gray-900'}`}>
+                            {stock}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <Link to={`/inventory/items/${item.id}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="View">
+                            <Eye size={16} className="text-gray-400" />
+                          </Link>
+                          <Link to={`/inventory/items/${item.id}/edit`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
+                            <Edit size={16} className="text-gray-400" />
+                          </Link>
+                          <button onClick={() => handleDelete(item.id)} className="p-2 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                            <Trash2 size={16} className="text-red-400" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   )
