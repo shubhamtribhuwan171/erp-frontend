@@ -138,7 +138,7 @@ function LayoutInner({ children }: LayoutProps) {
     document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
   )
 
-  const { company, modules, loading, user } = useApp()
+  const { company, modules, loading, user, features } = useApp()
 
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const userMenuRef = useRef<HTMLDivElement | null>(null)
@@ -152,11 +152,47 @@ function LayoutInner({ children }: LayoutProps) {
   const isActive = (path: string) => location.pathname === path
 
   const visibleMenuItems = useMemo(() => {
-    return menuItems.filter((item) => {
-      if (!('module' in item) || !item.module) return true
-      return modules[item.module]
-    })
-  }, [modules])
+    const flagForPath = (path: string): boolean => {
+      // default allow
+      const inv = features?.inventory
+      const sales = features?.sales
+      const pur = features?.purchases
+      const hr = features?.hr
+
+      if (path.startsWith('/inventory/transactions')) return inv?.transactions ?? true
+      if (path.startsWith('/inventory/transfers')) return inv?.transfers ?? true
+      if (path.startsWith('/inventory/adjustments')) return inv?.adjustments ?? true
+
+      if (path.startsWith('/sales/quotations')) return sales?.quotations ?? true
+      if (path.startsWith('/sales/invoices')) return sales?.invoices ?? true
+      if (path.startsWith('/sales/returns')) return sales?.returns ?? true
+
+      if (path.startsWith('/purchases/receipts')) return pur?.receipts ?? true
+      if (path.startsWith('/purchases/vendor-invoices')) return pur?.vendorInvoices ?? true
+      if (path.startsWith('/purchases/returns')) return pur?.returns ?? true
+
+      if (path.startsWith('/hr/attendance')) return hr?.attendance ?? true
+
+      return true
+    }
+
+    return menuItems
+      .filter((item) => {
+        if (!('module' in item) || !item.module) return true
+        return modules[item.module]
+      })
+      .map((item) => {
+        if (!('items' in item)) return item
+        return {
+          ...item,
+          items: item.items.filter((sub) => flagForPath(sub.path)),
+        }
+      })
+      .filter((item) => {
+        if (!('items' in item)) return true
+        return item.items.length > 0
+      })
+  }, [modules, features])
 
   // If a module is disabled and the user is on that route, gently bounce them to dashboard.
   useEffect(() => {

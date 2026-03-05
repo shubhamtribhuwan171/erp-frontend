@@ -28,9 +28,19 @@ export type SessionUser = {
   isAdmin?: boolean
 }
 
+export type EffectiveFeatures = {
+  modules?: Partial<Record<ModuleKey, boolean>>
+  inventory?: { transactions?: boolean; transfers?: boolean; adjustments?: boolean }
+  sales?: { quotations?: boolean; invoices?: boolean; returns?: boolean }
+  purchases?: { receipts?: boolean; vendorInvoices?: boolean; returns?: boolean }
+  hr?: { attendance?: boolean }
+  [key: string]: any
+}
+
 type AppContextValue = {
   user: SessionUser | null
   company: Company | null
+  features: EffectiveFeatures | null
   modules: Record<ModuleKey, boolean>
   loading: boolean
   refresh: () => Promise<void>
@@ -53,6 +63,7 @@ function coerceModules(features: any): Record<ModuleKey, boolean> {
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<SessionUser | null>(null)
   const [company, setCompany] = useState<Company | null>(null)
+  const [features, setFeatures] = useState<EffectiveFeatures | null>(null)
   const [loading, setLoading] = useState(true)
 
   const refresh = async () => {
@@ -63,6 +74,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       const companyRes = await settings.getCompany()
       setCompany(companyRes.data?.data ?? null)
+
+      // effective features (industry profile merged + company overrides)
+      const featuresRes = await settings.effectiveFeatures()
+      setFeatures(featuresRes.data?.data?.features ?? null)
     } finally {
       setLoading(false)
     }
@@ -77,11 +92,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const modules = useMemo(() => coerceModules(company?.features), [company?.features])
+  const modules = useMemo(() => coerceModules(features ?? company?.features), [features, company?.features])
 
   const value: AppContextValue = {
     user,
     company,
+    features,
     modules,
     loading,
     refresh,

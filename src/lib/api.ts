@@ -43,6 +43,7 @@ export const auth = {
 export const settings = {
   getCompany: () => api.get('/settings/company'),
   updateCompany: (data: any) => api.put('/settings/company', data),
+  effectiveFeatures: () => api.get('/settings/effective-features'),
   listUsers: () => api.get('/settings/users'),
   createUser: (data: any) => api.post('/settings/users', data),
 };
