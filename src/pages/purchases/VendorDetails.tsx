@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, Edit, Mail, Phone, Landmark, MapPin, FileText, ShoppingCart, Receipt, Truck, Clock, TrendingUp } from 'lucide-react'
+import { ArrowLeft, Edit, Mail, Phone, MapPin, Landmark, FileText, ShoppingCart, Receipt, TrendingUp, Clock } from 'lucide-react'
 import { purchases } from '../../lib/api'
 
 function formatCurrency(minor?: number | null) {
@@ -11,18 +11,6 @@ function formatCurrency(minor?: number | null) {
 function formatDate(date?: string | null) {
   if (!date) return '-'
   return new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-}
-
-function formatAddress(addr: any): string {
-  if (!addr) return '-'
-  if (typeof addr === 'string') return addr
-  if (typeof addr === 'object') {
-    const parts = [addr.line1, addr.line2, addr.area, addr.city, addr.state, addr.pincode, addr.country]
-      .filter(Boolean)
-      .map(String)
-    return parts.length ? parts.join(', ') : JSON.stringify(addr)
-  }
-  return String(addr)
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -40,7 +28,7 @@ function StatusBadge({ status }: { status: string }) {
     inactive: 'bg-gray-100 text-gray-700',
   }
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs capitalize ${colors[status] || 'bg-gray-100 text-gray-700'}`}>
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium capitalize ${colors[status] || 'bg-gray-100 text-gray-700'}`}>
       {status}
     </span>
   )
@@ -69,25 +57,22 @@ export default function VendorDetails() {
     run()
   }, [id])
 
-  const statusBadge = useMemo(() => {
-    const s = String(vendor?.status ?? 'active').toLowerCase()
-    return s === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-  }, [vendor?.status])
-
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="flex items-center gap-3">
-          <Link to="/purchases/vendors" className="p-2 hover:bg-gray-100 rounded" title="Back">
-            <ArrowLeft size={18} className="text-[var(--secondary)]" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-semibold">Vendor</h1>
-            <p className="text-[var(--text-secondary)]">Vendor details</p>
+      <div className="min-h-screen bg-[#FAFAFA] p-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <Link to="/purchases/vendors" className="p-2.5 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+              <ArrowLeft size={20} className="text-gray-400" />
+            </Link>
+            <div className="h-6 w-32 bg-gray-100 rounded animate-pulse" />
           </div>
-        </div>
-        <div className="bg-white rounded-lg border border-[var(--border)] p-8 text-center text-[var(--secondary)]">
-          Loading...
+          <div className="grid gap-6">
+            <div className="h-40 bg-white rounded-2xl animate-pulse" />
+            <div className="grid grid-cols-4 gap-4">
+              {[1,2,3,4].map(i => <div key={i} className="h-24 bg-white rounded-xl animate-pulse" />)}
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -95,18 +80,17 @@ export default function VendorDetails() {
 
   if (error || !vendor) {
     return (
-      <div className="space-y-4">
-        <div className="flex items-center gap-3">
-          <Link to="/purchases/vendors" className="p-2 hover:bg-gray-100 rounded" title="Back">
-            <ArrowLeft size={18} className="text-[var(--secondary)]" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-semibold">Vendor</h1>
-            <p className="text-[var(--text-secondary)]">Vendor details</p>
+      <div className="min-h-screen bg-[#FAFAFA] p-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <Link to="/purchases/vendors" className="p-2.5 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+              <ArrowLeft size={20} className="text-gray-400" />
+            </Link>
+            <span className="text-gray-500">Vendor Details</span>
           </div>
-        </div>
-        <div className="bg-white rounded-lg border border-[var(--border)] p-8 text-center text-red-600">
-          {error || 'Vendor not found'}
+          <div className="bg-white rounded-2xl p-12 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+            <p className="text-gray-400">{error || 'Vendor not found'}</p>
+          </div>
         </div>
       </div>
     )
@@ -115,203 +99,183 @@ export default function VendorDetails() {
   const { stats = {}, purchaseOrders = [], vendorInvoices = [] } = vendor
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link to="/purchases/vendors" className="p-2 hover:bg-gray-100 rounded" title="Back">
-            <ArrowLeft size={18} className="text-[var(--secondary)]" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-semibold">Vendor</h1>
-            <p className="text-[var(--text-secondary)]">Vendor details</p>
+    <div className="min-h-screen bg-[#FAFAFA] p-6">
+      <div className="max-w-5xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to="/purchases/vendors" className="p-2.5 hover:bg-white hover:shadow-sm rounded-xl transition-all">
+              <ArrowLeft size={20} className="text-gray-400" />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">{vendor.name}</h1>
+              <p className="text-sm text-gray-400">Vendor Details</p>
+            </div>
           </div>
+
+          {id && (
+            <Link
+              to={`/purchases/vendors/${id}/edit`}
+              className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+            >
+              Edit Vendor
+            </Link>
+          )}
         </div>
 
-        {id && (
-          <Link
-            to={`/purchases/vendors/${id}/edit`}
-            className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-4 py-2 rounded-lg inline-flex items-center gap-2"
-          >
-            <Edit size={18} />
-            Edit
-          </Link>
-        )}
-      </div>
+        {/* Basic Info Card */}
+        <div className="bg-white rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center">
+                <span className="text-2xl font-semibold text-gray-300">{vendor.name?.charAt(0).toUpperCase()}</span>
+              </div>
+              <div>
+                <div className="font-mono text-lg text-gray-700">{vendor.code || '-'}</div>
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium mt-1 ${
+                  String(vendor.status ?? 'active').toLowerCase() === 'active' 
+                    ? 'bg-green-50 text-green-600 border border-green-100' 
+                    : 'bg-gray-50 text-gray-600 border border-gray-100'
+                }`}>
+                  {vendor.status ?? 'active'}
+                </span>
+              </div>
+            </div>
+          </div>
 
-      {/* Basic Info Card */}
-      <div className="bg-white rounded-lg border border-[var(--border)] p-4">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <div className="text-sm text-[var(--text-secondary)]">Name</div>
-            <div className="text-lg font-semibold">{vendor.name ?? '-'}</div>
-            <div className="text-sm text-[var(--text-secondary)] font-mono">{vendor.code ?? ''}</div>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-1">
+                <Mail size={14} /> Email
+              </div>
+              <div className="text-gray-700">{vendor.email || '-'}</div>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-1">
+                <Phone size={14} /> Phone
+              </div>
+              <div className="text-gray-700">{vendor.phone || '-'}</div>
+            </div>
           </div>
-          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs capitalize ${statusBadge}`}>
-            {vendor.status ?? 'active'}
-          </span>
-        </div>
 
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div className="border border-[var(--border)] rounded-lg p-3">
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
-              <Mail size={14} /> Email
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-1">
+                <Landmark size={14} /> Payment Terms
+              </div>
+              <div className="text-gray-700">
+                {vendor.payment_terms_days !== null && vendor.payment_terms_days !== undefined
+                  ? `${vendor.payment_terms_days} days`
+                  : '-'}
+              </div>
+              {vendor.default_lead_time_days && (
+                <div className="text-xs text-gray-400 mt-1">Lead time: {vendor.default_lead_time_days} days</div>
+              )}
             </div>
-            <div className="mt-1 font-medium">{vendor.email ?? '-'}</div>
-          </div>
-          <div className="border border-[var(--border)] rounded-lg p-3">
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
-              <Phone size={14} /> Phone
-            </div>
-            <div className="mt-1 font-medium">{vendor.phone ?? '-'}</div>
-          </div>
-        </div>
-
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div className="border border-[var(--border)] rounded-lg p-3">
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
-              <MapPin size={14} /> Address
-            </div>
-            <div className="mt-1 whitespace-pre-wrap">{formatAddress(vendor.address)}</div>
-          </div>
-          <div className="border border-[var(--border)] rounded-lg p-3">
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
-              <Landmark size={14} /> Payment Terms
-            </div>
-            <div className="mt-1 font-medium">
-              {vendor.payment_terms_days !== null && vendor.payment_terms_days !== undefined
-                ? `${vendor.payment_terms_days} days`
-                : '-'}
-            </div>
-            {vendor.default_lead_time_days && (
-              <div className="text-xs text-[var(--text-secondary)] mt-1">
-                Lead time: {vendor.default_lead_time_days} days
+            {vendor.tax_id && (
+              <div className="p-4 bg-gray-50 rounded-xl">
+                <div className="text-gray-400 text-sm mb-1">Tax ID</div>
+                <div className="text-gray-700 font-mono">{vendor.tax_id}</div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Tax ID */}
-        {vendor.tax_id && (
-          <div className="mt-4 text-sm">
-            <span className="text-[var(--text-secondary)]">Tax ID: </span>
-            <span className="font-mono">{vendor.tax_id}</span>
+        {/* Stats Grid */}
+        {stats && (
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="bg-white rounded-xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                <TrendingUp size={16} /> Total Spend
+              </div>
+              <div className="text-xl font-semibold text-gray-900">{formatCurrency(stats.totalSpend)}</div>
+            </div>
+            <div className="bg-white rounded-xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                <ShoppingCart size={16} /> Orders
+              </div>
+              <div className="text-xl font-semibold text-gray-900">{stats.orderCount}</div>
+            </div>
+            <div className="bg-white rounded-xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                <Receipt size={16} /> Invoices
+              </div>
+              <div className="text-xl font-semibold text-gray-900">{stats.invoiceCount}</div>
+            </div>
+            <div className="bg-white rounded-xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                <Clock size={16} /> Pending
+              </div>
+              <div className="text-xl font-semibold text-gray-900">{stats.pendingOrdersCount}</div>
+            </div>
+            <div className="bg-white rounded-xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+              <div className="text-gray-400 text-sm mb-2">Pending Value</div>
+              <div className="text-xl font-semibold text-gray-900">{formatCurrency(stats.pendingOrdersValue)}</div>
+            </div>
           </div>
         )}
+
+        {/* Tables Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Vendor Invoices */}
+          {vendorInvoices.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
+                <Receipt size={18} className="text-green-500" />
+                <h3 className="font-semibold text-gray-900">Vendor Invoices</h3>
+              </div>
+              <div className="divide-y divide-gray-100">
+                {vendorInvoices.slice(0, 4).map((inv: any) => (
+                  <Link key={inv.id} to={`/purchases/vendor-invoices/${inv.id}`} className="flex items-center justify-between px-5 py-3 hover:bg-gray-50/50">
+                    <div>
+                      <div className="text-sm font-mono text-gray-700">{inv.invoice_no || inv.po_no}</div>
+                      <div className="text-xs text-gray-400">{formatDate(inv.invoice_date || inv.order_date)}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-medium text-gray-900">{formatCurrency(inv.amount_minor || inv.total_minor)}</div>
+                      <StatusBadge status={inv.status} />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Purchase Orders */}
+          {purchaseOrders.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
+                <ShoppingCart size={18} className="text-blue-500" />
+                <h3 className="font-semibold text-gray-900">Purchase Orders</h3>
+              </div>
+              <div className="divide-y divide-gray-100">
+                {purchaseOrders.slice(0, 4).map((po: any) => (
+                  <Link key={po.id} to={`/purchases/orders/${po.id}`} className="flex items-center justify-between px-5 py-3 hover:bg-gray-50/50">
+                    <div>
+                      <div className="text-sm font-mono text-gray-700">{po.po_no}</div>
+                      <div className="text-xs text-gray-400">{formatDate(po.order_date)}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-medium text-gray-900">{formatCurrency(po.total_minor)}</div>
+                      <StatusBadge status={po.status} />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Empty State */}
+        {purchaseOrders.length === 0 && vendorInvoices.length === 0 && (
+          <div className="bg-white rounded-2xl p-12 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+            <FileText size={40} className="mx-auto mb-3 text-gray-200" />
+            <p className="text-gray-400">No orders or invoices yet</p>
+          </div>
+        )}
+
       </div>
-
-      {/* Stats Summary */}
-      {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <div className="bg-white rounded-lg border border-[var(--border)] p-3">
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
-              <TrendingUp size={14} /> Total Spend
-            </div>
-            <div className="text-lg font-semibold mt-1">{formatCurrency(stats.totalSpend)}</div>
-          </div>
-          <div className="bg-white rounded-lg border border-[var(--border)] p-3">
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
-              <ShoppingCart size={14} /> Orders
-            </div>
-            <div className="text-lg font-semibold mt-1">{stats.orderCount}</div>
-          </div>
-          <div className="bg-white rounded-lg border border-[var(--border)] p-3">
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
-              <Receipt size={14} /> Invoices
-            </div>
-            <div className="text-lg font-semibold mt-1">{stats.invoiceCount}</div>
-          </div>
-          <div className="bg-white rounded-lg border border-[var(--border)] p-3">
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
-              <Clock size={14} /> Pending
-            </div>
-            <div className="text-lg font-semibold mt-1">{stats.pendingOrdersCount}</div>
-            <div className="text-xs text-[var(--text-secondary)]">{formatCurrency(stats.pendingOrdersValue)}</div>
-          </div>
-        </div>
-      )}
-
-      {/* Vendor Invoices */}
-      {vendorInvoices.length > 0 && (
-        <div className="bg-white rounded-lg border border-[var(--border)] overflow-hidden">
-          <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
-            <div className="flex items-center gap-2">
-              <Receipt size={18} className="text-green-500" />
-              <h2 className="font-semibold">Vendor Invoices</h2>
-            </div>
-            <Link to="/purchases/vendor-invoices" className="text-sm text-[var(--primary)] hover:underline">
-              View all
-            </Link>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-[var(--text-secondary)]">
-                <tr>
-                  <th className="text-left px-4 py-2 font-medium">Invoice #</th>
-                  <th className="text-left px-4 py-2 font-medium">Date</th>
-                  <th className="text-right px-4 py-2 font-medium">Amount</th>
-                  <th className="text-center px-4 py-2 font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {vendorInvoices.slice(0, 5).map((inv: any) => (
-                  <tr key={inv.id} className="border-t border-[var(--border)] hover:bg-gray-50">
-                    <td className="px-4 py-2 font-mono">{inv.invoice_no || inv.po_no}</td>
-                    <td className="px-4 py-2">{formatDate(inv.invoice_date || inv.order_date)}</td>
-                    <td className="px-4 py-2 text-right font-medium">{formatCurrency(inv.amount_minor || inv.total_minor)}</td>
-                    <td className="px-4 py-2 text-center"><StatusBadge status={inv.status} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Purchase Orders */}
-      {purchaseOrders.length > 0 && (
-        <div className="bg-white rounded-lg border border-[var(--border)] overflow-hidden">
-          <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
-            <div className="flex items-center gap-2">
-              <ShoppingCart size={18} className="text-blue-500" />
-              <h2 className="font-semibold">Purchase Orders</h2>
-            </div>
-            <Link to="/purchases/orders" className="text-sm text-[var(--primary)] hover:underline">
-              View all
-            </Link>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-[var(--text-secondary)]">
-                <tr>
-                  <th className="text-left px-4 py-2 font-medium">PO #</th>
-                  <th className="text-left px-4 py-2 font-medium">Date</th>
-                  <th className="text-right px-4 py-2 font-medium">Amount</th>
-                  <th className="text-center px-4 py-2 font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {purchaseOrders.slice(0, 5).map((po: any) => (
-                  <tr key={po.id} className="border-t border-[var(--border)] hover:bg-gray-50">
-                    <td className="px-4 py-2 font-mono">{po.po_no}</td>
-                    <td className="px-4 py-2">{formatDate(po.order_date)}</td>
-                    <td className="px-4 py-2 text-right font-medium">{formatCurrency(po.total_minor)}</td>
-                    <td className="px-4 py-2 text-center"><StatusBadge status={po.status} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {purchaseOrders.length === 0 && vendorInvoices.length === 0 && (
-        <div className="bg-white rounded-lg border border-[var(--border)] p-8 text-center text-[var(--text-secondary)]">
-          <FileText size={32} className="mx-auto mb-2 opacity-50" />
-          <p>No orders or invoices yet</p>
-        </div>
-      )}
     </div>
   )
 }
