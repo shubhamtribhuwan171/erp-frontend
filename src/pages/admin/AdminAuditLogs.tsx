@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { adminAudit } from '../../lib/admin-api'
+import { getAdminErrorMessage } from '../../lib/admin-error'
 import { Card, Badge } from '../../components/ui'
+import { ErrorState } from '../../components/ui/RequestState'
 
 export default function AdminAuditLogs() {
   const [logs, setLogs] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<unknown | null>(null)
   const [filters, setFilters] = useState({
     action: '',
     target_type: '',
@@ -13,16 +16,20 @@ export default function AdminAuditLogs() {
 
   useEffect(() => {
     loadLogs()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
   const loadLogs = async () => {
+    setLoading(true)
+    setError(null)
     try {
       const res = await adminAudit.list(filters)
       if (res.success) {
         setLogs(res.data.logs)
       }
-    } catch (error) {
-      console.error('Failed to load:', error)
+    } catch (e) {
+      console.error('Failed to load:', e)
+      setError(e)
     } finally {
       setLoading(false)
     }
@@ -35,13 +42,14 @@ export default function AdminAuditLogs() {
     return 'default'
   }
 
-  if (loading) return <div>Loading...</div>
+  if (error) return <ErrorState message={getAdminErrorMessage(error)} />
+
+  if (loading) return <div>Loading…</div>
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Audit Logs</h1>
 
-      {/* Filters */}
       <Card className="p-4 mb-6">
         <div className="flex gap-4">
           <div className="flex-1">
@@ -75,7 +83,6 @@ export default function AdminAuditLogs() {
         </div>
       </Card>
 
-      {/* Logs Table */}
       <Card className="overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50">
@@ -90,22 +97,14 @@ export default function AdminAuditLogs() {
           <tbody className="divide-y divide-gray-200">
             {logs.map((log) => (
               <tr key={log.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm text-gray-500">
-                  {new Date(log.created_at).toLocaleString()}
-                </td>
-                <td className="px-6 py-4 text-sm">
-                  {log.admin?.email || 'System'}
-                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">{new Date(log.created_at).toLocaleString()}</td>
+                <td className="px-6 py-4 text-sm">{log.admin?.email || 'System'}</td>
                 <td className="px-6 py-4">
-                  <Badge variant={getActionColor(log.action)}>
-                    {log.action.replace(/_/g, ' ')}
-                  </Badge>
+                  <Badge variant={getActionColor(log.action)}>{log.action.replace(/_/g, ' ')}</Badge>
                 </td>
                 <td className="px-6 py-4 text-sm">
                   <span className="capitalize">{log.target_type}</span>
-                  <span className="text-gray-400 ml-1">
-                    {log.target_id?.slice(0, 8)}...
-                  </span>
+                  <span className="text-gray-400 ml-1">{log.target_id?.slice(0, 8)}...</span>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {log.details ? JSON.stringify(log.details).slice(0, 50) : '-'}
@@ -114,9 +113,7 @@ export default function AdminAuditLogs() {
             ))}
           </tbody>
         </table>
-        {!logs.length && (
-          <div className="p-8 text-center text-gray-500">No audit logs</div>
-        )}
+        {!logs.length && <div className="p-8 text-center text-gray-500">No audit logs</div>}
       </Card>
     </div>
   )

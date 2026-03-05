@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, Loader2, Package } from 'lucide-react';
-import { inventory } from '../../lib/api';
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Save, Loader2, Package } from 'lucide-react'
+import { inventory } from '../../lib/api'
+import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
+import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
 
 export default function NewItemForm() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [units, setUnits] = useState<any[]>([]);
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<unknown | null>(null)
+
+  const [categories, setCategories] = useState<any[]>([])
+  const [units, setUnits] = useState<any[]>([])
   const [form, setForm] = useState({
     name: '',
     sku: '',
@@ -20,27 +24,27 @@ export default function NewItemForm() {
     reorder_qty: '',
     track_inventory: true,
     is_active: true,
-  });
+  })
 
   useEffect(() => {
     const fetchData = async () => {
+      setError(null)
       try {
-        const [catRes, unitRes] = await Promise.all([
-          inventory.categories.list(),
-          inventory.units.list(),
-        ]);
-        setCategories(catRes.data.data || []);
-        setUnits(unitRes.data.data || []);
-      } catch (error) {
-        console.error('Failed to fetch data');
+        const [catRes, unitRes] = await Promise.all([inventory.categories.list(), inventory.units.list()])
+        setCategories(catRes.data.data || [])
+        setUnits(unitRes.data.data || [])
+      } catch (e) {
+        console.error('Failed to fetch data', e)
+        setError(e)
       }
-    };
-    fetchData();
-  }, []);
+    }
+    fetchData()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
     try {
       const data = {
         ...form,
@@ -48,15 +52,22 @@ export default function NewItemForm() {
         sale_price_minor: form.sale_price_minor ? parseFloat(form.sale_price_minor) * 100 : 0,
         reorder_level: form.reorder_level ? parseInt(form.reorder_level) : null,
         reorder_qty: form.reorder_qty ? parseInt(form.reorder_qty) : null,
-      };
-      await inventory.items.create(data);
-      navigate('/inventory/items');
-    } catch (error) {
-      alert('Failed to create item');
+      }
+      await inventory.items.create(data)
+      navigate('/inventory/items')
+    } catch (e) {
+      setError(e)
+      alert(getApiErrorMessage(e))
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
+
+  if (error) {
+    if (isModuleDisabledError(error)) return <ModuleDisabledState moduleName="Inventory" />
+    if (isForbidden(error)) return <ForbiddenState />
+    return <ErrorState message={getApiErrorMessage(error)} />
+  }
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -127,7 +138,9 @@ export default function NewItemForm() {
               >
                 <option value="">Select Category</option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -142,7 +155,9 @@ export default function NewItemForm() {
               >
                 <option value="">Select Unit</option>
                 {units.map((unit) => (
-                  <option key={unit.id} value={unit.id}>{unit.name} ({unit.code})</option>
+                  <option key={unit.id} value={unit.id}>
+                    {unit.name} ({unit.code})
+                  </option>
                 ))}
               </select>
             </div>
@@ -236,5 +251,5 @@ export default function NewItemForm() {
         </form>
       </div>
     </div>
-  );
+  )
 }

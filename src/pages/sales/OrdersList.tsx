@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Search, Eye, Edit, MoreVertical, FileText, Truck, XCircle, ChevronDown } from 'lucide-react';
-import { sales } from '../../lib/api';
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Plus, Search, Eye, Edit, Truck, XCircle, ChevronDown } from 'lucide-react'
+import { sales } from '../../lib/api'
+import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
+import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
 
 const statusColors: Record<string, string> = {
   draft: 'bg-gray-100 text-gray-700',
@@ -11,39 +13,50 @@ const statusColors: Record<string, string> = {
   delivered: 'bg-green-100 text-green-700',
   invoiced: 'bg-green-100 text-green-700',
   cancelled: 'bg-red-100 text-red-700',
-};
+}
 
 export default function OrdersList() {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState('');
+  const [orders, setOrders] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<unknown | null>(null)
+  const [statusFilter, setStatusFilter] = useState('')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true)
+      setError(null)
       try {
-        const params = statusFilter ? { status: statusFilter } : {};
-        const response = await sales.orders.list(params);
-        setOrders(response.data.data?.orders || []);
-      } catch (error) {
-        console.error('Failed to fetch orders');
+        const params: Record<string, string> = {}
+        if (statusFilter) params.status = statusFilter
+        if (search) params.search = search
+
+        const response = await sales.orders.list(params)
+        setOrders(response.data.data?.orders || [])
+      } catch (e) {
+        console.error('Failed to fetch orders', e)
+        setError(e)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchOrders();
-  }, [statusFilter]);
+    }
+    fetchOrders()
+  }, [statusFilter, search])
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount / 100);
-  };
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format((amount || 0) / 100)
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-  };
+  const formatDate = (date: string) =>
+    new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+
+  if (error) {
+    if (isModuleDisabledError(error)) return <ModuleDisabledState moduleName="Sales" />
+    if (isForbidden(error)) return <ForbiddenState />
+    return <ErrorState message={getApiErrorMessage(error)} />
+  }
 
   return (
     <div className="space-y-4">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Sales Orders</h1>
@@ -58,7 +71,6 @@ export default function OrdersList() {
         </Link>
       </div>
 
-      {/* Filters */}
       <div className="bg-white rounded-lg border border-[var(--border)] p-4">
         <div className="flex items-center gap-4">
           <div className="flex-1 relative">
@@ -66,6 +78,8 @@ export default function OrdersList() {
             <input
               type="text"
               placeholder="Search orders..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             />
           </div>
@@ -91,7 +105,6 @@ export default function OrdersList() {
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-lg border border-[var(--border-strong)] overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-[var(--border-strong)]">
@@ -107,12 +120,17 @@ export default function OrdersList() {
           <tbody className="divide-y divide-[var(--border-strong)]">
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">Loading...</td>
+                <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">
+                  Loading…
+                </td>
               </tr>
             ) : orders.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">
-                  No orders found. <Link to="/sales/orders/new" className="text-[var(--primary)] hover:underline">Create one</Link>
+                  No orders found.{' '}
+                  <Link to="/sales/orders/new" className="text-[var(--primary)] hover:underline">
+                    Create one
+                  </Link>
                 </td>
               </tr>
             ) : (
@@ -123,7 +141,9 @@ export default function OrdersList() {
                   <td className="px-4 py-3 text-[var(--text-secondary)]">{formatDate(order.order_date)}</td>
                   <td className="px-4 py-3 text-right font-medium">{formatCurrency(order.total_minor)}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`inline-block px-2 py-1 rounded-full text-xs capitalize ${statusColors[order.status] || 'bg-gray-100 text-gray-700'}`}>
+                    <span
+                      className={`inline-block px-2 py-1 rounded-full text-xs capitalize ${statusColors[order.status] || 'bg-gray-100 text-gray-700'}`}
+                    >
                       {order.status}
                     </span>
                   </td>
@@ -133,7 +153,11 @@ export default function OrdersList() {
                         <Eye size={16} className="text-[var(--secondary)]" />
                       </Link>
                       {order.status === 'draft' && (
-                        <Link to={`/sales/orders/${order.id}/edit`} className="p-2 hover:bg-gray-100 rounded" title="Edit">
+                        <Link
+                          to={`/sales/orders/${order.id}/edit`}
+                          className="p-2 hover:bg-gray-100 rounded"
+                          title="Edit"
+                        >
                           <Edit size={16} className="text-[var(--secondary)]" />
                         </Link>
                       )}
@@ -156,5 +180,5 @@ export default function OrdersList() {
         </table>
       </div>
     </div>
-  );
+  )
 }

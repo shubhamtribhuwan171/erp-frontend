@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, Loader2, User } from 'lucide-react';
-import { sales } from '../../lib/api';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Save, Loader2, User } from 'lucide-react'
+import { sales } from '../../lib/api'
+import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
+import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
 
 export default function NewCustomerForm() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<unknown | null>(null)
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -14,24 +17,32 @@ export default function NewCustomerForm() {
     shipping_address: '',
     tax_id: '',
     payment_terms_days: 30,
-  });
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
     try {
       await sales.customers.create({
         ...form,
         billing_address: form.billing_address ? { line1: form.billing_address } : null,
         shipping_address: form.shipping_address ? { line1: form.shipping_address } : null,
-      });
-      navigate('/sales/customers');
-    } catch (error) {
-      alert('Failed to create customer');
+      })
+      navigate('/sales/customers')
+    } catch (e) {
+      setError(e)
+      alert(getApiErrorMessage(e))
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
+
+  if (error) {
+    if (isModuleDisabledError(error)) return <ModuleDisabledState moduleName="Sales" />
+    if (isForbidden(error)) return <ForbiddenState />
+    return <ErrorState message={getApiErrorMessage(error)} />
+  }
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -157,5 +168,5 @@ export default function NewCustomerForm() {
         </form>
       </div>
     </div>
-  );
+  )
 }

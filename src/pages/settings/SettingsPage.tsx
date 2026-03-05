@@ -1,68 +1,79 @@
-import { useState, useEffect } from 'react';
-import { User, Building, Save, Loader2 } from 'lucide-react';
-import { settings, auth } from '../../lib/api';
+import { useEffect, useState } from 'react'
+import { User, Building, Save, Loader2 } from 'lucide-react'
+import { settings, auth } from '../../lib/api'
+import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
+import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
 
 export default function SettingsPage() {
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [company, setCompany] = useState<any>({});
-  const [user, setUser] = useState<any>(null);
-  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [company, setCompany] = useState<any>({})
+  const [user, setUser] = useState<any>(null)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState<unknown | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
+      setError(null)
       try {
-        const [companyRes, userRes] = await Promise.all([
-          settings.getCompany(),
-          auth.me(),
-        ]);
-        setCompany(companyRes.data.data || {});
-        setUser(userRes.data.data?.user || null);
-      } catch (error) {
-        console.error('Failed to fetch settings');
+        const [companyRes, userRes] = await Promise.all([settings.getCompany(), auth.me()])
+        setCompany(companyRes.data.data || {})
+        setUser(userRes.data.data?.user || null)
+      } catch (e) {
+        console.error('Failed to fetch settings', e)
+        setError(e)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchData();
-  }, []);
+    }
+    fetchData()
+  }, [])
 
   const handleSave = async () => {
-    setSaving(true);
-    setMessage('');
+    setSaving(true)
+    setMessage('')
+    setError(null)
     try {
-      await settings.updateCompany(company);
-      setMessage('Settings saved successfully!');
-    } catch (error) {
-      setMessage('Failed to save settings');
+      await settings.updateCompany(company)
+      setMessage('Settings saved successfully!')
+    } catch (e) {
+      setError(e)
+      setMessage(getApiErrorMessage(e))
     } finally {
-      setSaving(false);
+      setSaving(false)
     }
-  };
+  }
+
+  if (error) {
+    if (isModuleDisabledError(error)) return <ModuleDisabledState moduleName="Settings" />
+    if (isForbidden(error)) return <ForbiddenState />
+    return <ErrorState message={getApiErrorMessage(error)} />
+  }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-[var(--secondary)]">Loading...</div>
+        <div className="text-[var(--secondary)]">Loading…</div>
       </div>
-    );
+    )
   }
 
   return (
     <div className="space-y-6 max-w-3xl">
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold">Settings</h1>
         <p className="text-[var(--text-secondary)]">Manage your company and account settings</p>
       </div>
 
       {message && (
-        <div className={`p-4 rounded-lg ${message.includes('success') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+        <div
+          className={`p-4 rounded-lg ${message.includes('success') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}
+        >
           {message}
         </div>
       )}
 
-      {/* Company Settings */}
       <div className="bg-white rounded-lg border border-[var(--border)] p-6">
         <div className="flex items-center gap-3 mb-6">
           <Building className="text-[var(--primary)]" size={24} />
@@ -131,7 +142,6 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Account Settings */}
       <div className="bg-white rounded-lg border border-[var(--border)] p-6">
         <div className="flex items-center gap-3 mb-6">
           <User className="text-[var(--primary)]" size={24} />
@@ -161,7 +171,6 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Save Button */}
       <div className="flex justify-end">
         <button
           onClick={handleSave}
@@ -169,9 +178,9 @@ export default function SettingsPage() {
           className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
         >
           {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-          {saving ? 'Saving...' : 'Save Changes'}
+          {saving ? 'Saving…' : 'Save Changes'}
         </button>
       </div>
     </div>
-  );
+  )
 }

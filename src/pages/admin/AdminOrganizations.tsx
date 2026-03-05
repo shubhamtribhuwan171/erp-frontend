@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { adminOrgs } from '../../lib/admin-api'
+import { getAdminErrorMessage } from '../../lib/admin-error'
 import { Card, Button, Input, Badge, EmptyState } from '../../components/ui'
+import { ErrorState } from '../../components/ui/RequestState'
 
 export default function AdminOrganizations() {
   const [organizations, setOrganizations] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<unknown | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [form, setForm] = useState({
     name: '',
@@ -15,16 +18,20 @@ export default function AdminOrganizations() {
 
   useEffect(() => {
     loadOrganizations()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const loadOrganizations = async () => {
+    setLoading(true)
+    setError(null)
     try {
       const res = await adminOrgs.list()
       if (res.success) {
         setOrganizations(res.data.organizations)
       }
-    } catch (error) {
-      console.error('Failed to load:', error)
+    } catch (e) {
+      console.error('Failed to load:', e)
+      setError(e)
     } finally {
       setLoading(false)
     }
@@ -32,26 +39,34 @@ export default function AdminOrganizations() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
     try {
       await adminOrgs.create(form)
       setShowModal(false)
       setForm({ name: '', legal_name: '', admin_email: '', admin_password: '' })
       loadOrganizations()
-    } catch (error) {
-      alert('Failed to create organization')
+    } catch (e) {
+      setError(e)
+      alert(getAdminErrorMessage(e))
     }
   }
 
   const toggleActive = async (org: any) => {
+    setError(null)
     try {
       await adminOrgs.update(org.id, { is_active: !org.is_active })
       loadOrganizations()
-    } catch (error) {
-      alert('Failed to update')
+    } catch (e) {
+      setError(e)
+      alert(getAdminErrorMessage(e))
     }
   }
 
-  if (loading) return <div>Loading...</div>
+  if (error && !showModal) {
+    return <ErrorState message={getAdminErrorMessage(error)} />
+  }
+
+  if (loading) return <div>Loading…</div>
 
   return (
     <div>
@@ -78,16 +93,12 @@ export default function AdminOrganizations() {
                   <p className="font-medium">{org.name}</p>
                   <p className="text-sm text-gray-500">{org.legal_name}</p>
                 </td>
-                <td className="px-6 py-4 text-sm">
-                  {org.users?.[0]?.count || 0}
-                </td>
+                <td className="px-6 py-4 text-sm">{org.users?.[0]?.count || 0}</td>
                 <td className="px-6 py-4">
                   <Badge variant="info">{org.plan?.plan_name || 'basic'}</Badge>
                 </td>
                 <td className="px-6 py-4">
-                  <Badge variant={org.is_active ? 'success' : 'danger'}>
-                    {org.is_active ? 'Active' : 'Inactive'}
-                  </Badge>
+                  <Badge variant={org.is_active ? 'success' : 'danger'}>{org.is_active ? 'Active' : 'Inactive'}</Badge>
                 </td>
                 <td className="px-6 py-4">
                   <button
@@ -101,16 +112,20 @@ export default function AdminOrganizations() {
             ))}
           </tbody>
         </table>
-        {!organizations.length && (
-          <EmptyState title="No organizations" />
-        )}
+        {!organizations.length && <EmptyState title="No organizations" />}
       </Card>
 
-      {/* Create Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <Card className="w-full max-w-md p-6">
             <h2 className="text-xl font-bold mb-4">New Organization</h2>
+
+            {error ? (
+              <div className="mb-4">
+                <ErrorState title="Could not create organization" message={getAdminErrorMessage(error)} />
+              </div>
+            ) : null}
+
             <form onSubmit={handleCreate} className="space-y-4">
               <Input
                 label="Company Name"
@@ -118,11 +133,7 @@ export default function AdminOrganizations() {
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
               />
-              <Input
-                label="Legal Name"
-                value={form.legal_name}
-                onChange={(e) => setForm({ ...form, legal_name: e.target.value })}
-              />
+              <Input label="Legal Name" value={form.legal_name} onChange={(e) => setForm({ ...form, legal_name: e.target.value })} />
               <Input
                 label="Admin Email"
                 type="email"

@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, Edit, Package } from 'lucide-react'
 import { sales } from '../../lib/api'
+import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
+import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
 
 function formatCurrency(minor?: number | null) {
   if (minor === null || minor === undefined) return '-'
@@ -17,18 +19,18 @@ export default function OrderDetails() {
   const { id } = useParams()
   const [loading, setLoading] = useState(true)
   const [order, setOrder] = useState<any>(null)
-  const [error, setError] = useState<string>('')
+  const [error, setError] = useState<unknown | null>(null)
 
   useEffect(() => {
     const run = async () => {
       if (!id) return
       setLoading(true)
-      setError('')
+      setError(null)
       try {
         const res = await sales.orders.get(id)
         setOrder(res.data.data)
-      } catch (e: any) {
-        setError(e?.message ?? 'Failed to load order')
+      } catch (e) {
+        setError(e)
       } finally {
         setLoading(false)
       }
@@ -47,6 +49,12 @@ export default function OrderDetails() {
     }
     return map[s] ?? 'bg-gray-100 text-gray-700'
   }, [order?.status])
+
+  if (error) {
+    if (isModuleDisabledError(error)) return <ModuleDisabledState moduleName="Sales" />
+    if (isForbidden(error)) return <ForbiddenState />
+    return <ErrorState message={getApiErrorMessage(error)} />
+  }
 
   return (
     <div className="space-y-4">
@@ -75,8 +83,6 @@ export default function OrderDetails() {
       <div className="bg-white rounded-lg border border-[var(--border)] p-4">
         {loading ? (
           <div className="py-8 text-center text-[var(--secondary)]">Loading…</div>
-        ) : error ? (
-          <div className="py-8 text-center text-red-600">{error}</div>
         ) : !order ? (
           <div className="py-8 text-center text-[var(--secondary)]">Order not found</div>
         ) : (
@@ -134,7 +140,7 @@ export default function OrderDetails() {
         )}
       </div>
 
-      {!loading && !error && order && (
+      {!loading && order && (
         <div className="bg-white rounded-lg border border-[var(--border-strong)] overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b border-[var(--border-strong)]">
             <div className="flex items-center gap-2">

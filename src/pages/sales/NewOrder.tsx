@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
 import { inventory, sales } from '../../lib/api'
+import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
+import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
 
 function todayISO() {
   const d = new Date()
@@ -28,7 +30,7 @@ export default function NewOrder() {
 
   const [loadingRefs, setLoadingRefs] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<unknown | null>(null)
 
   const [customers, setCustomers] = useState<any[]>([])
   const [items, setItems] = useState<any[]>([])
@@ -59,7 +61,7 @@ export default function NewOrder() {
   useEffect(() => {
     const run = async () => {
       setLoadingRefs(true)
-      setError('')
+      setError(null)
       try {
         const [custRes, itemsRes, whRes, unitRes] = await Promise.all([
           sales.customers.list({ limit: 200 }),
@@ -72,8 +74,8 @@ export default function NewOrder() {
         setItems(itemsRes.data.data?.items ?? itemsRes.data.data ?? [])
         setWarehouses(whRes.data.data ?? [])
         setUnits(unitRes.data.data ?? [])
-      } catch (e: any) {
-        setError(e?.message ?? 'Failed to load reference data')
+      } catch (e) {
+        setError(e)
       } finally {
         setLoadingRefs(false)
       }
@@ -133,7 +135,7 @@ export default function NewOrder() {
 
   const handleCreate = async () => {
     setSubmitting(true)
-    setError('')
+    setError(null)
     try {
       const payload = {
         customer_id: customerId,
@@ -159,11 +161,18 @@ export default function NewOrder() {
       const res = await sales.orders.create(payload)
       const created = res.data.data ?? res.data
       navigate(`/sales/orders/${created.id}`)
-    } catch (e: any) {
-      setError(e?.response?.data?.message ?? e?.message ?? 'Failed to create order')
+    } catch (e) {
+      setError(e)
+      alert(getApiErrorMessage(e))
     } finally {
       setSubmitting(false)
     }
+  }
+
+  if (error) {
+    if (isModuleDisabledError(error)) return <ModuleDisabledState moduleName="Sales" />
+    if (isForbidden(error)) return <ForbiddenState />
+    return <ErrorState message={getApiErrorMessage(error)} />
   }
 
   return (
@@ -189,12 +198,6 @@ export default function NewOrder() {
           {submitting ? 'Creating…' : 'Create'}
         </button>
       </div>
-
-      {error && (
-        <div className="bg-red-50 text-red-700 border border-red-200 rounded-lg p-3 text-sm">
-          {error}
-        </div>
-      )}
 
       <div className="bg-white rounded-lg border border-[var(--border)] p-4">
         {loadingRefs ? (
@@ -395,10 +398,18 @@ export default function NewOrder() {
         </div>
 
         <div className="p-4 border-t border-[var(--border-strong)] flex items-center justify-end gap-6 text-sm">
-          <div className="text-[var(--text-secondary)]">Subtotal: <span className="text-[var(--text-primary)] font-medium">{totals.subtotal}</span></div>
-          <div className="text-[var(--text-secondary)]">Tax: <span className="text-[var(--text-primary)] font-medium">{totals.tax}</span></div>
-          <div className="text-[var(--text-secondary)]">Discount: <span className="text-[var(--text-primary)] font-medium">{totals.discount}</span></div>
-          <div className="text-[var(--text-secondary)]">Total: <span className="text-[var(--text-primary)] font-semibold">{totals.total}</span></div>
+          <div className="text-[var(--text-secondary)]">
+            Subtotal: <span className="text-[var(--text-primary)] font-medium">{totals.subtotal}</span>
+          </div>
+          <div className="text-[var(--text-secondary)]">
+            Tax: <span className="text-[var(--text-primary)] font-medium">{totals.tax}</span>
+          </div>
+          <div className="text-[var(--text-secondary)]">
+            Discount: <span className="text-[var(--text-primary)] font-medium">{totals.discount}</span>
+          </div>
+          <div className="text-[var(--text-secondary)]">
+            Total: <span className="text-[var(--text-primary)] font-semibold">{totals.total}</span>
+          </div>
         </div>
       </div>
     </div>

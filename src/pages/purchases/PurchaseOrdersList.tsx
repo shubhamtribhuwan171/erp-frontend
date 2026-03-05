@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Search, Eye, Edit, Trash2, Truck } from 'lucide-react';
-import { purchases } from '../../lib/api';
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Plus, Eye, Edit } from 'lucide-react'
+import { purchases } from '../../lib/api'
+import { getApiErrorMessage, isForbidden, isModuleDisabledError } from '../../lib/api-error'
+import { ErrorState, ForbiddenState, ModuleDisabledState } from '../../components/ui/RequestState'
 
 const statusColors: Record<string, string> = {
   draft: 'bg-gray-100 text-gray-700',
@@ -10,33 +12,41 @@ const statusColors: Record<string, string> = {
   partial: 'bg-purple-100 text-purple-700',
   received: 'bg-green-100 text-green-700',
   cancelled: 'bg-red-100 text-red-700',
-};
+}
 
 export default function PurchaseOrdersList() {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<unknown | null>(null)
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true)
+      setError(null)
       try {
-        const response = await purchases.orders.list();
-        setOrders(response.data.data?.orders || []);
-      } catch (error) {
-        console.error('Failed to fetch orders');
+        const response = await purchases.orders.list()
+        setOrders(response.data.data?.orders || [])
+      } catch (e) {
+        console.error('Failed to fetch orders', e)
+        setError(e)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchOrders();
-  }, []);
+    }
+    fetchOrders()
+  }, [])
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount / 100);
-  };
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format((amount || 0) / 100)
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-  };
+  const formatDate = (date: string) =>
+    new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+
+  if (error) {
+    if (isModuleDisabledError(error)) return <ModuleDisabledState moduleName="Purchases" />
+    if (isForbidden(error)) return <ForbiddenState />
+    return <ErrorState message={getApiErrorMessage(error)} />
+  }
 
   return (
     <div className="space-y-4">
@@ -69,12 +79,17 @@ export default function PurchaseOrdersList() {
           <tbody className="divide-y divide-[var(--border)]">
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">Loading...</td>
+                <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">
+                  Loading…
+                </td>
               </tr>
             ) : orders.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-[var(--secondary)]">
-                  No purchase orders yet. <Link to="/purchases/orders/new" className="text-[var(--primary)] hover:underline">Create one</Link>
+                  No purchase orders yet.{' '}
+                  <Link to="/purchases/orders/new" className="text-[var(--primary)] hover:underline">
+                    Create one
+                  </Link>
                 </td>
               </tr>
             ) : (
@@ -85,17 +100,23 @@ export default function PurchaseOrdersList() {
                   <td className="px-4 py-3 text-[var(--text-secondary)]">{formatDate(order.order_date)}</td>
                   <td className="px-4 py-3 text-right font-medium">{formatCurrency(order.total_minor)}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`inline-block px-2 py-1 rounded-full text-xs capitalize ${statusColors[order.status] || 'bg-gray-100 text-gray-700'}`}>
+                    <span
+                      className={`inline-block px-2 py-1 rounded-full text-xs capitalize ${statusColors[order.status] || 'bg-gray-100 text-gray-700'}`}
+                    >
                       {order.status}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Link to={`/purchases/orders/${order.id}`} className="p-2 hover:bg-gray-100 rounded">
+                      <Link to={`/purchases/orders/${order.id}`} className="p-2 hover:bg-gray-100 rounded" title="View">
                         <Eye size={16} className="text-[var(--secondary)]" />
                       </Link>
                       {order.status === 'draft' && (
-                        <Link to={`/purchases/orders/${order.id}/edit`} className="p-2 hover:bg-gray-100 rounded">
+                        <Link
+                          to={`/purchases/orders/${order.id}/edit`}
+                          className="p-2 hover:bg-gray-100 rounded"
+                          title="Edit"
+                        >
                           <Edit size={16} className="text-[var(--secondary)]" />
                         </Link>
                       )}
@@ -108,5 +129,5 @@ export default function PurchaseOrdersList() {
         </table>
       </div>
     </div>
-  );
+  )
 }
